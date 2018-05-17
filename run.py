@@ -11,6 +11,8 @@ from glob import glob
 parser = optparse.OptionParser()
 parser.add_option('-s', '--scala', dest='scala', help='Path to the Scala build dir')
 parser.add_option('-d', '--debugPort', dest='debugPort', help='Port on which remote debugger can be attached')
+parser.add_option('-c', '--corpus', dest='corpus', default="scala-library", help='Project to compile')
+
 
 (options, args) = parser.parse_args()
 
@@ -21,11 +23,11 @@ def findFiles(path, regex):
 	    files.extend([os.path.join(path, file) for file in fnames if rx.search(file)])
 	return files
 
-akkaActor = os.path.join("corpus", "akka", "akka-actor")
+corpus = os.path.join("corpus", options.corpus)
 
-akkaActorSources = findFiles(os.path.join(akkaActor, "src"), r'\.(scala$|java$)')
+sources = findFiles(os.path.join(corpus, "src"), r'\.(scala$|java$)')
 
-akkaActorJars = findFiles(os.path.join(akkaActor, "lib"), r'\.jar')
+jars = findFiles(os.path.join(corpus, "lib"), r'\.jar')
 
 scalaJars = findFiles(os.path.join(options.scala, "lib"), r'\.jar')
 
@@ -46,8 +48,8 @@ subprocess.call([
 	os.path.join(options.scala, "bin", "scalac"),
 	"-J-javaagent:" + umadJar,
 	"-toolcp", umadJar,
-	"-cp", classpathSeparator.join(scalaJars + akkaActorJars)] +
+	"-cp", classpathSeparator.join(scalaJars + jars)] +
 	scalacOptions +
-	akkaActorSources +
+	sources +
 	debugOptions +
 	args)
