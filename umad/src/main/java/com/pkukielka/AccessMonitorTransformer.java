@@ -10,6 +10,8 @@ import java.security.ProtectionDomain;
 public class AccessMonitorTransformer implements ClassFileTransformer {
     private final ClassMethodSelector classMethodSelector;
     private final MethodRewriter methodRewriter;
+    private static final AppConfig conf = new AppConfig();
+
 
     AccessMonitorTransformer(final Instrumentation instrumentation, ClassMethodSelector classMethodSelector, MethodRewriter methodRewriter) {
         this.classMethodSelector = classMethodSelector;
@@ -53,7 +55,9 @@ public class AccessMonitorTransformer implements ClassFileTransformer {
                 classpool.removeClassPath(loaderClassPath);
                 classpool.removeClassPath(byteArrayClassPath);
 
-                System.out.println("[Info] Transformed " + classNameDotted);
+                if (conf.verbose) {
+                    System.out.println("[Info] Transformed " + classNameDotted);
+                }
             } catch (Exception ex) {
                 System.err.println("[Error] Unable to transform: " + classNameDotted);
                 ex.printStackTrace();

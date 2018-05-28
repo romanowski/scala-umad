@@ -10,6 +10,7 @@ public class AppConfig {
     public int intervalMs = 100;
     public boolean shouldThrowExceptions = true;
     public boolean shouldPrintStackTrace = false;
+    public boolean verbose = false;
     public List<? extends Config> includes = new ArrayList<Config>();
     public List<? extends Config> excludes = new ArrayList<Config>();
 
@@ -38,6 +39,10 @@ public class AppConfig {
 
         if (conf.hasPath("shouldPrintStackTrace")) {
             this.shouldPrintStackTrace = conf.getBoolean("shouldPrintStackTrace");
+        }
+
+        if (conf.hasPath("verbose")) {
+            this.verbose = conf.getBoolean("verbose");
         }
     }
 }
