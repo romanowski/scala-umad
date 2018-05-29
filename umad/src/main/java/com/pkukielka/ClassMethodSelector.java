@@ -1,10 +1,13 @@
 package com.pkukielka;
 
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigValueFactory;
 import javassist.CtMethod;
 import javassist.bytecode.AccessFlag;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -12,8 +15,15 @@ public class ClassMethodSelector {
     private final List<ClassMethodDefinition> includes = new ArrayList<ClassMethodDefinition>();
     private final List<ClassMethodDefinition> excludes = new ArrayList<ClassMethodDefinition>();
 
-    ClassMethodSelector() {
-        for (Config include : (new AppConfig()).includes) {
+
+
+    public static final ClassMethodSelector EMPTY =
+            new ClassMethodSelector(ConfigFactory.empty()
+                            .withValue("includes",ConfigValueFactory.fromAnyRef(Arrays.asList()))
+            );
+
+    ClassMethodSelector(Config config) {
+        for (Config include : config.getConfigList("includes")) {
             includes.add(new ClassMethodDefinition(
                     include.getString("class"),
                     include.getString("method"),
@@ -21,22 +31,19 @@ public class ClassMethodSelector {
                     include.hasPath("onlyPublicMethods") && include.getBoolean("onlyPublicMethods")
             ));
         }
-        for (Config exclude : (new AppConfig()).excludes) {
-            excludes.add(new ClassMethodDefinition(
-                    exclude.getString("class"),
-                    exclude.getString("method"),
-                    null,
-                    false
-            ));
-        }
+        if(config.hasPath("excludes"))
+            for (Config exclude : config.getConfigList("excludes")) {
+                excludes.add(new ClassMethodDefinition(
+                        exclude.getString("class"),
+                        exclude.getString("method"),
+                        null,
+                        false
+                ));
+            }
     }
 
     boolean shouldTransformClass(final String classNameDotted) {
         return isMatchingDefinition(classNameDotted, null);
-    }
-
-    boolean shouldTransform(final String classNameDotted, final CtMethod editableMethod) {
-        return isMatchingDefinition(classNameDotted, editableMethod);
     }
 
     private boolean doesDefinitionMatch(final ClassMethodDefinition definition, final String classNameDotted, final CtMethod editableMethod) {

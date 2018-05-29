@@ -120,7 +120,7 @@
           <archive>
           <manifestEntries>
             <addClasspath>true</addClasspath>
-            <Premain-Class>com.pkukielka.AccessMonitorAgent</Premain-Class>
+            <Premain-Class>com.pkukielka.UmadAgent</Premain-Class>
             <Can-Redefine-Classes>true</Can-Redefine-Classes>
             <Can-Retransform-Classes>true</Can-Retransform-Classes>
             <Main-Class>NotSuitableAsMain</Main-Class>

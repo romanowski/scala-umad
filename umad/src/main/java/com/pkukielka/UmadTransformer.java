@@ -7,18 +7,14 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 
-public class AccessMonitorTransformer implements ClassFileTransformer {
-    private final ClassMethodSelector classMethodSelector;
-    private final MethodRewriter methodRewriter;
-    private static final AppConfig conf = new AppConfig();
-
-
-    AccessMonitorTransformer(final Instrumentation instrumentation, ClassMethodSelector classMethodSelector, MethodRewriter methodRewriter) {
-        this.classMethodSelector = classMethodSelector;
-        this.methodRewriter = methodRewriter;
+public class UmadTransformer implements ClassFileTransformer {
+    private final MethodRewriter monitorAccess;
+    private final MethodRewriter chaos;
+    UmadTransformer(final Instrumentation instrumentation) {
+        monitorAccess = new AccessMonitorRewriter(AppConfig.get().getMonitorConfig());
+        chaos = new ChaosRewriter(AppConfig.get().getChaosConfig());
 
         instrumentation.addTransformer(this, true);
-
         System.out.println("[Info] TracingTransformer active");
     }
 
@@ -26,7 +22,10 @@ public class AccessMonitorTransformer implements ClassFileTransformer {
                             final ProtectionDomain protectionDomain, final byte[] classfileBuffer) throws IllegalClassFormatException {
         byte[] byteCode = classfileBuffer;
         final String classNameDotted = className.replaceAll("/", ".");
-        if (classMethodSelector.shouldTransformClass(classNameDotted)) {
+        boolean monitorApply = monitorAccess.shouldTransformClass(classNameDotted);
+        boolean chaosApply = monitorAccess.shouldTransformClass(classNameDotted);
+
+        if (monitorApply || chaosApply) {
             try {
                 final ClassPool classpool = ClassPool.getDefault();
                 final ClassPath loaderClassPath = new LoaderClassPath(loader);
@@ -40,9 +39,11 @@ public class AccessMonitorTransformer implements ClassFileTransformer {
                 final CtClass editableClass = classpool.get(classNameDotted);
                 final CtMethod declaredMethods[] = editableClass.getDeclaredMethods();
                 for (final CtMethod editableMethod : declaredMethods) {
-                    ClassMethodSelector.ClassMethodDefinition md = classMethodSelector.findMatchingDefinition(classNameDotted, editableMethod);
-                    if (md != null) {
-                        methodRewriter.editMethod(editableMethod, md.ifCalledFrom);
+                    if (monitorApply) {
+                        monitorAccess.applyOnMethod(editableMethod, classNameDotted);
+                    }
+                    if (chaosApply) {
+                        chaos.applyOnMethod(editableMethod, classNameDotted);
                     }
                 }
 
@@ -55,7 +56,7 @@ public class AccessMonitorTransformer implements ClassFileTransformer {
                 classpool.removeClassPath(loaderClassPath);
                 classpool.removeClassPath(byteArrayClassPath);
 
-                if (conf.verbose) {
+                if (AppConfig.get().verbose) {
                     System.out.println("[Info] Transformed " + classNameDotted);
                 }
             } catch (Exception ex) {
@@ -63,6 +64,7 @@ public class AccessMonitorTransformer implements ClassFileTransformer {
                 ex.printStackTrace();
             }
         }
+
 
         return byteCode;
     }

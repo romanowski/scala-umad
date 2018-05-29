@@ -2,47 +2,61 @@ package com.pkukielka;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.typesafe.config.ConfigValueFactory;
 
 public class AppConfig {
     public int intervalMs = 100;
     public boolean shouldThrowExceptions = true;
     public boolean shouldPrintStackTrace = false;
     public boolean verbose = false;
-    public List<? extends Config> includes = new ArrayList<Config>();
-    public List<? extends Config> excludes = new ArrayList<Config>();
+    private Config monitorConfig;
+    private Config chaosConfig;
 
+    private static AppConfig instance;
 
-    public AppConfig() {
+    public static synchronized AppConfig get(){
+        if(instance == null){
+            instance = new AppConfig();
+        }
+        return instance;
+    }
+
+    public Config getMonitorConfig() {
+        return monitorConfig;
+    }
+
+    public Config getChaosConfig() {
+        return chaosConfig;
+    }
+
+    private Config loadConfig(String name, Config in){
+        if(!in.hasPath(name)) {
+            System.out.println("[WARN] No config for: " + name);
+            return ConfigFactory.empty().withValue("enabled", ConfigValueFactory.fromAnyRef(false));
+        }
+        return in.getConfig(name);
+    }
+
+    private AppConfig() {
         Config conf = ConfigFactory.defaultOverrides().withFallback(ConfigFactory.load());
 
-        if (conf == null || !conf.hasPath("umad")) return;
+        if (conf == null || !conf.hasPath("umad"))
+            throw new RuntimeException("Config should contains 'umad' node.");
         else conf = conf.getConfig("umad");
 
-        if (conf.hasPath("excludes")) {
-            this.excludes = conf.getConfigList("excludes");
-        }
+        this.monitorConfig = loadConfig("monitor", conf);
+        this.chaosConfig = loadConfig("chaos", conf);
 
-        if (conf.hasPath("includes")) {
-            this.includes = conf.getConfigList("includes");
-        }
-
-        if (conf.hasPath("shouldThrowExceptions")) {
+        if (conf.hasPath("shouldThrowExceptions"))
             this.shouldThrowExceptions = conf.getBoolean("shouldThrowExceptions");
-        }
 
-        if (conf.hasPath("intervalMs")) {
+        if (conf.hasPath("intervalMs"))
             this.intervalMs = conf.getInt("intervalMs");
-        }
 
-        if (conf.hasPath("shouldPrintStackTrace")) {
+        if (conf.hasPath("shouldPrintStackTrace"))
             this.shouldPrintStackTrace = conf.getBoolean("shouldPrintStackTrace");
-        }
 
-        if (conf.hasPath("verbose")) {
+        if (conf.hasPath("verbose"))
             this.verbose = conf.getBoolean("verbose");
-        }
     }
 }

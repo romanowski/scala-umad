@@ -1,6 +1,6 @@
 package com.pkukielka.test;
 
-import com.pkukielka.MethodRewriter;
+import com.pkukielka.AccessMonitorRewriter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class AgentTest {
 
     @Before
     public void setUp() {
-        MethodRewriter.clearState();
+        AccessMonitorRewriter.clearState();
         failed = false;
     }
 

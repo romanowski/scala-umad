@@ -17,7 +17,6 @@ parser.add_option('-c', '--corpus', dest='corpus', default="scala-library", help
 parser.add_option('-o', '--overrides', dest='overrides', default="", help='Config overrides (key=values paris separated by ;')
 
 
-
 (options, args) = parser.parse_args()
 
 def findFiles(path, regex):
@@ -38,9 +37,6 @@ scalaJars = findFiles(os.path.join(options.scala, "lib"), r'\.jar')
 scalacOptions = ["-encoding", "UTF-8", "-target:jvm-1.8", "-feature", "-unchecked",
 				 "-Xlog-reflective-calls", "-Xlint", "-opt:l:none", "-J-XX:MaxInlineSize=0"]
 
-configOverrides = map(lambda v: "-J-D"+v, options.overrides.split(';'))
-print configOverrides
-
 debugOptions = []
 if options.debugPort:
     debugOptions =  ["-J-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005".format(options.debugPort)]
@@ -48,7 +44,6 @@ if options.debugPort:
 classpathSeparator = ";" if os.name == 'nt' else ":"
 
 subprocess.call(["mvn", "package"], cwd="umad")
-subprocess.call(["mvn", "package"], cwd="noop")
 
 outputBase = tempfile.mkdtemp()
 scalaOutput = os.path.join(outputBase, "scala")
@@ -57,8 +52,9 @@ baselineOutput = os.path.join(outputBase, "baseline")
 os.mkdir(scalaOutput)
 os.mkdir(baselineOutput)
 
-def call_compiler(scalaLocation, output, agentName):
-    agentJar = os.path.join(".", agentName, "target", agentName + "-1.0-SNAPSHOT.jar")
+def call_compiler(scalaLocation, output, additionalOptions=[]):
+    agentJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
+    configOverrides = map(lambda v: "-J-D"+v, options.overrides.split(';') + additionalOptions)
     subprocess.call([
 						os.path.join(scalaLocation, "bin", "scalac"),
 						"-cp", classpathSeparator.join(scalaJars + jars),
@@ -72,13 +68,13 @@ def call_compiler(scalaLocation, output, agentName):
 					debugOptions +
 					args)
 
-call_compiler(options.scala, scalaOutput, "umad")
+call_compiler(options.scala, scalaOutput)
 
 print "Compilation done."
 
 if options.baseline != "":
 	print "Compiling baseline... "
-	call_compiler(options.baseline, baselineOutput, "noop")
+	call_compiler(options.baseline, baselineOutput, ["umad.monitor.enabled=false"])
 
 	result = subprocess.call([
 						"diff", "-r",
