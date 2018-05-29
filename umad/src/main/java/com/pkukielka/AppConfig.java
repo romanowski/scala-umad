@@ -16,7 +16,7 @@ public class AppConfig {
 
 
     public AppConfig() {
-        Config conf = ConfigFactory.load();
+        Config conf = ConfigFactory.defaultOverrides().withFallback(ConfigFactory.load());
 
         if (conf == null || !conf.hasPath("umad")) return;
         else conf = conf.getConfig("umad");

@@ -14,6 +14,8 @@ parser.add_option('-s', '--scala', dest='scala', help='Path to the Scala build d
 parser.add_option('-b', '--baseline-scala', dest='baseline', default="", help='Path to the baseline Scala build dir')
 parser.add_option('-d', '--debugPort', dest='debugPort', help='Port on which remote debugger can be attached')
 parser.add_option('-c', '--corpus', dest='corpus', default="scala-library", help='Project to compile')
+parser.add_option('-o', '--overrides', dest='overrides', default="", help='Config overrides (key=values paris separated by ;')
+
 
 
 (options, args) = parser.parse_args()
@@ -35,6 +37,9 @@ scalaJars = findFiles(os.path.join(options.scala, "lib"), r'\.jar')
 
 scalacOptions = ["-encoding", "UTF-8", "-target:jvm-1.8", "-feature", "-unchecked",
 				 "-Xlog-reflective-calls", "-Xlint", "-opt:l:none", "-J-XX:MaxInlineSize=0"]
+
+configOverrides = map(lambda v: "-J-D"+v, options.overrides.split(';'))
+print configOverrides
 
 debugOptions = []
 if options.debugPort:
@@ -59,7 +64,9 @@ def call_compiler(scalaLocation, output, agentName):
 						"-cp", classpathSeparator.join(scalaJars + jars),
 						"-d", output,
 						"-J-javaagent:" + agentJar,
-						 "-toolcp", agentJar] +
+						 "-toolcp", agentJar
+                     ] +
+                    configOverrides +
 					scalacOptions +
 					sources +
 					debugOptions +
