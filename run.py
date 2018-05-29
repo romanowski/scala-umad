@@ -33,8 +33,6 @@ jars = findFiles(os.path.join(corpus, "lib"), r'\.jar')
 
 scalaJars = findFiles(os.path.join(options.scala, "lib"), r'\.jar')
 
-umadJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
-
 scalacOptions = ["-encoding", "UTF-8", "-target:jvm-1.8", "-feature", "-unchecked",
 				 "-Xlog-reflective-calls", "-Xlint", "-opt:l:none", "-J-XX:MaxInlineSize=0"]
 
@@ -45,8 +43,7 @@ if options.debugPort:
 classpathSeparator = ";" if os.name == 'nt' else ":"
 
 subprocess.call(["mvn", "package"], cwd="umad")
-
-
+subprocess.call(["mvn", "package"], cwd="noop")
 
 outputBase = tempfile.mkdtemp()
 scalaOutput = os.path.join(outputBase, "scala")
@@ -55,25 +52,26 @@ baselineOutput = os.path.join(outputBase, "baseline")
 os.mkdir(scalaOutput)
 os.mkdir(baselineOutput)
 
-def call_compiler(scalaLocation, output, additionalOptions = []):
-	subprocess.call([
+def call_compiler(scalaLocation, output, agentName):
+    agentJar = os.path.join(".", agentName, "target", agentName + "-1.0-SNAPSHOT.jar")
+    subprocess.call([
 						os.path.join(scalaLocation, "bin", "scalac"),
 						"-cp", classpathSeparator.join(scalaJars + jars),
-						"-d", output] +
-					additionalOptions +
+						"-d", output,
+						"-J-javaagent:" + agentJar,
+						 "-toolcp", agentJar] +
 					scalacOptions +
 					sources +
 					debugOptions +
 					args)
 
-call_compiler(options.scala, scalaOutput, ["-J-javaagent:" + umadJar, "-toolcp", umadJar])
+call_compiler(options.scala, scalaOutput, "umad")
 
 print "Compilation done."
 
-
 if options.baseline != "":
 	print "Compiling baseline... "
-	call_compiler(options.baseline, baselineOutput)
+	call_compiler(options.baseline, baselineOutput, "noop")
 
 	result = subprocess.call([
 						"diff", "-r",
