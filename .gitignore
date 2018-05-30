@@ -1,2 +1,7 @@
 *.class
 *.log
+local-run.sh
+*.iml
+*.out
+.idea/
+target/
