@@ -5,7 +5,6 @@ import javassist.CannotCompileException;
 import javassist.CtMethod;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 
 public class ChaosRewriter extends MethodRewriter {
@@ -28,12 +27,15 @@ public class ChaosRewriter extends MethodRewriter {
 
   private static final Random random = new Random();
 
+  private static int JITHolder = 0; // Used to trick JIT
+
   public static void chaoticSleep(int sleepThreshold, int sleepTime) {
-    try {
-      int picked = random.nextInt(sleepThreshold + sleepTime);
-      if(picked > sleepThreshold) TimeUnit.NANOSECONDS.sleep(sleepTime -sleepThreshold);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    int picked = random.nextInt(sleepThreshold + sleepTime);
+    if (picked > sleepThreshold) {
+      int limit = (picked - sleepThreshold) * 1000;
+      for (int i = 0; i < limit; i++) {
+        JITHolder = JITHolder + i; // Tricking the JIT not to optimize this part
+      }
     }
   }
 

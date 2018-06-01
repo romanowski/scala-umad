@@ -80,7 +80,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
   public AccessMonitorRewriter(Config config) {
     super(config);
     if (isEnabled()) {
-      String msg = "Analyzing method access with shouldThrowExceptions=%s and shouldPrintStackTrace%s";
+      String msg = "Analyzing method access with shouldThrowExceptions=%s and shouldPrintStackTrace=%s";
       System.out.println(String.format(msg, conf.shouldThrowExceptions, conf.shouldPrintStackTrace));
     }
   }
