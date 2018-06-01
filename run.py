@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 
 from glob import glob
 
@@ -63,6 +64,7 @@ os.mkdir(baselineOutput)
 def call_compiler(scalaLocation, output, additionalOptions=[]):
     agentJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
     configOverrides = map(lambda v: "-J-D" + v, options.config + additionalOptions)
+    timeBefore = time.time()
     subprocess.call([
                         os.path.join(scalaLocation, "bin", "scalac"),
                         "-cp", classpathSeparator.join(scalaJars + jars),
@@ -75,15 +77,19 @@ def call_compiler(scalaLocation, output, additionalOptions=[]):
                     sources +
                     debugOptions +
                     options.additionalOptions)
+    return time.time() - timeBefore
 
 
-call_compiler(options.scala, scalaOutput)
+compilation_time = call_compiler(options.scala, scalaOutput)
 
-print "Compilation done."
+print "Compilation done in:", compilation_time, "s"
 
 if options.baseline != "":
     print "Compiling baseline... "
-    call_compiler(options.baseline, baselineOutput, ["umad.monitor.enabled=false"])
+    base_compilation_time = call_compiler(options.baseline, baselineOutput,
+                                          ["umad.monitor.enabled=false", "umad.chaos.enabled=false"])
+
+    print "Baseline compilation done in:", base_compilation_time, "s (", compilation_time, "for tested scalac)"
 
     result = subprocess.call([
         "diff", "-r",

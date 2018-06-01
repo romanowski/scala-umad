@@ -3,7 +3,6 @@ package com.pkukielka;
 import com.typesafe.config.Config;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
-import javassist.bytecode.AccessFlag;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,81 +12,84 @@ import java.util.regex.Pattern;
 
 
 class LastAccess {
-    long timestamp;
-    long threadId;
-    int hashCode;
-    String stackTrace;
-    String threadName;
+  long timestamp;
+  long threadId;
+  int hashCode;
+  String stackTrace;
+  String threadName;
 
-    LastAccess(long timestamp, long threadId, int hashCode, String threadName) {
-        this.timestamp = timestamp;
-        this.threadId = threadId;
-        this.hashCode = hashCode;
-        this.stackTrace = null;
-        this.threadName = threadName;
-    }
+  LastAccess(long timestamp, long threadId, int hashCode, String threadName) {
+    this.timestamp = timestamp;
+    this.threadId = threadId;
+    this.hashCode = hashCode;
+    this.stackTrace = null;
+    this.threadName = threadName;
+  }
 }
 
 public class AccessMonitorRewriter extends MethodRewriter {
-    private static final AppConfig conf = AppConfig.get();
-    private static final Map<String, LastAccess> methodCalls = new HashMap<String, LastAccess>();
-    private static final Set<String> alreadyReported = new HashSet<String>();
+  private static final AppConfig conf = AppConfig.get();
+  private static final Map<String, LastAccess> methodCalls = new HashMap<String, LastAccess>();
+  private static final Set<String> alreadyReported = new HashSet<String>();
 
-    public static void clearState() {
-        methodCalls.clear();
-        alreadyReported.clear();
-    }
+  public static void clearState() {
+    methodCalls.clear();
+    alreadyReported.clear();
+  }
 
-    public static int realStackStartIndex = 2;
+  public static int realStackStartIndex = 2;
 
-    public static void logUnsafeMethodCalls(String methodName, String ifCalledFrom, int hashCode) {
-        synchronized (conf) {
-            Thread thread = Thread.currentThread();
-            Long currentTimestamp = System.currentTimeMillis();
+  public static void logUnsafeMethodCalls(String methodName, String ifCalledFrom, int hashCode) {
+    synchronized (conf) {
+      Thread thread = Thread.currentThread();
+      Long currentTimestamp = System.currentTimeMillis();
 
-            LastAccess current = new LastAccess(currentTimestamp, thread.getId(), hashCode, thread.getName());
-            LastAccess last = methodCalls.put(methodName, current);
+      LastAccess current = new LastAccess(currentTimestamp, thread.getId(), hashCode, thread.getName());
+      LastAccess last = methodCalls.put(methodName, current);
 
-            if (last != null &&
-                    last.threadId != current.threadId &&
-                    last.hashCode == current.hashCode &&
-                    current.timestamp - last.timestamp <= conf.intervalMs)
-            {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+      if (last != null &&
+        last.threadId != current.threadId &&
+        last.hashCode == current.hashCode &&
+        current.timestamp - last.timestamp <= conf.intervalMs) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
-                String calledFrom = stackTrace[realStackStartIndex + 1].toString();
+        String calledFrom = stackTrace[realStackStartIndex + 1].toString();
 
-                Pattern ifCalledFromPattern = Pattern.compile(ifCalledFrom);
-                methodName = (ifCalledFrom.equals("null")) ? methodName :
-                        (ifCalledFromPattern.matcher(calledFrom).matches() ? calledFrom : null);
+        Pattern ifCalledFromPattern = Pattern.compile(ifCalledFrom);
+        methodName = (ifCalledFrom.equals("null")) ? methodName :
+          (ifCalledFromPattern.matcher(calledFrom).matches() ? calledFrom : null);
 
-                if (methodName != null && alreadyReported.add(methodName)) {
-                    String msg = String.format("Method accessed from multiple threads (%s, %s): %s",
-                            last.threadName, current.threadName, methodName);
+        if (methodName != null && alreadyReported.add(methodName)) {
+          String msg = String.format("Method accessed from multiple threads (%s, %s): %s",
+            last.threadName, current.threadName, methodName);
 
-                    StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
-                    for (int i = realStackStartIndex; i < stackTrace.length; i++) {
-                        str.append("    ").append(stackTrace[i].toString()).append("\n");
-                    }
-                    String stack = str.toString();
-                    current.stackTrace = stack;
+          StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
+          for (int i = realStackStartIndex; i < stackTrace.length; i++) {
+            str.append("    ").append(stackTrace[i].toString()).append("\n");
+          }
+          String stack = str.toString();
+          current.stackTrace = stack;
 
-                    if (conf.shouldPrintStackTrace) System.out.println(stack);
-                    if (conf.shouldThrowExceptions) throw new IllegalThreadStateException(msg);
-                }
-            }
+          if (conf.shouldPrintStackTrace) System.out.println(stack);
+          if (conf.shouldThrowExceptions) throw new IllegalThreadStateException(msg);
         }
+      }
     }
+  }
 
-    public AccessMonitorRewriter(Config config){
-        super(config);
+  public AccessMonitorRewriter(Config config) {
+    super(config);
+    if (isEnabled()) {
+      String msg = "Analyzing method access with shouldThrowExceptions=%s and shouldPrintStackTrace%s";
+      System.out.println(String.format(msg, conf.shouldThrowExceptions, conf.shouldPrintStackTrace));
     }
+  }
 
-    @Override
-    protected void editMethod(final CtMethod editableMethod, String ifCalledFrom) throws CannotCompileException {
-        String methodName = editableMethod.getLongName();
-        editableMethod.insertBefore(
-                String.format("com.pkukielka.AccessMonitorRewriter.logUnsafeMethodCalls(\"%s\", \"%s\", System.identityHashCode(this));",
-                        methodName, ifCalledFrom));
-    }
+  @Override
+  protected void editMethod(final CtMethod editableMethod, String ifCalledFrom, String dottedName) throws CannotCompileException {
+    String methodName = editableMethod.getLongName();
+    editableMethod.insertBefore(
+      String.format("com.pkukielka.AccessMonitorRewriter.logUnsafeMethodCalls(\"%s\", \"%s\", System.identityHashCode(this));",
+        methodName, ifCalledFrom));
+  }
 }
