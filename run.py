@@ -16,9 +16,9 @@ parser.add_argument('-d', '--debugPort', dest='debugPort', help='Port on which r
 parser.add_argument('-c', '--corpus', dest='corpus', default="scala-library", help='Project to compile')
 parser.add_argument('-p', '--config', dest='config', default=[], type=str, nargs='+',
                     help='Config overrides (key=values paris)')
+parser.add_argument('additionalOptions', type=str, nargs="*")
 
 options = parser.parse_args()
-
 
 def findFiles(path, regex):
     rx = re.compile(regex)
@@ -73,7 +73,8 @@ def call_compiler(scalaLocation, output, additionalOptions=[]):
                     configOverrides +
                     scalacOptions +
                     sources +
-                    debugOptions)
+                    debugOptions +
+                    options.additionalOptions)
 
 
 call_compiler(options.scala, scalaOutput)
