@@ -5,16 +5,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 class MyTest {
-    int  interestingMethod() {
-        return 42;
+    // Without accessing fields/methods method are marked as safe :)
+    private int meaningOfLife = 42;
+    private static int universalRule = -1;
+
+
+    int interestingMethod() {
+        return meaningOfLife;
     }
 
     static int interestingStaticMethod() {
-        return -1;
+        return universalRule;
     }
 
     int otherMethod() {
-        return 0;
+        return meaningOfLife / 2;
     }
 }
 
