@@ -61,9 +61,9 @@ os.mkdir(scalaOutput)
 os.mkdir(baselineOutput)
 
 
-def call_compiler(scalaLocation, output, additionalScalacOptions, additionalOptions=[]):
+def call_compiler(scalaLocation, output, additionalScalacOptions, additionalConfig=[]):
     agentJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
-    configOverrides = map(lambda v: "-J-D" + v, options.config + additionalOptions)
+    configOverrides = map(lambda v: "-J-D" + v, options.config + additionalConfig)
     timeBefore = time.time()
     subprocess.call([
                         os.path.join(scalaLocation, "bin", "scalac"),
@@ -76,12 +76,11 @@ def call_compiler(scalaLocation, output, additionalScalacOptions, additionalOpti
                     scalacOptions +
                     sources +
                     debugOptions +
-                    additionalScalacOptions +
-                    options.additionalOptions)
+                    additionalScalacOptions)
     return time.time() - timeBefore
 
 
-compilation_time = call_compiler(options.scala, scalaOutput, ["-Yparallel-phases:parser", "-Yparallel-threads", "16"])
+compilation_time = call_compiler(options.scala, scalaOutput, options.additionalOptions)
 
 print "Compilation done in:", compilation_time, "s"
 

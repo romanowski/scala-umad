@@ -60,8 +60,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     current.timestamp - last.timestamp <= conf.intervalMs) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
-                for(StackTraceElement elem: stackTrace){
-                    String fqn = elem.getClassName() + "." +elem.getMethodName();
+                for (StackTraceElement elem : stackTrace) {
+                    String fqn = elem.getClassName() + "." + elem.getMethodName();
 
                     if (synchronizeIndicators.contains(fqn)) return;
                 }
@@ -138,7 +138,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
             Opcode.INVOKESTATIC
     ));
 
-    private boolean isThreadLocalGetOrSet(ConstPool pool, int index) {
+    private boolean isSafeMethod(ConstPool pool, int index) {
         String className = pool.getMethodrefClassName(index);
         String name = pool.getMethodrefName(index);
         String tpe = pool.getMethodrefType(index);
@@ -168,7 +168,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     int methodIndex = codeItertator.byteAt(codeIndex + 2) +
                             (codeItertator.byteAt(codeIndex + 1) << 8);
 
-                    if (!isThreadLocalGetOrSet(constPool, methodIndex))
+                    if (!isSafeMethod(constPool, methodIndex))
                         if (!safeMethodTypes.contains(constPool.getMethodrefType(methodIndex)))
                             return false;
                 } else switch (opCode) {
