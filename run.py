@@ -41,7 +41,7 @@ jars = findFiles(os.path.join(corpus, "lib"), r'\.jar')
 
 scalaJars = findFiles(os.path.join(options.scala, "lib"), r'\.jar')
 
-scalacOptions = ["-encoding", "UTF-8", "-target:jvm-1.8", "-feature", "-unchecked",
+scalacOptions = ["-encoding", "UTF-8", "-target:jvm-1.8", "-feature", "-unchecked", "-nowarn",
                  "-Xlog-reflective-calls", "-Xlint", "-opt:l:none", "-J-XX:MaxInlineSize=0"]
 
 debugOptions = []
@@ -61,7 +61,7 @@ os.mkdir(scalaOutput)
 os.mkdir(baselineOutput)
 
 
-def call_compiler(scalaLocation, output, additionalOptions=[]):
+def call_compiler(scalaLocation, output, additionalScalacOptions, additionalOptions=[]):
     agentJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
     configOverrides = map(lambda v: "-J-D" + v, options.config + additionalOptions)
     timeBefore = time.time()
@@ -76,17 +76,18 @@ def call_compiler(scalaLocation, output, additionalOptions=[]):
                     scalacOptions +
                     sources +
                     debugOptions +
+                    additionalScalacOptions +
                     options.additionalOptions)
     return time.time() - timeBefore
 
 
-compilation_time = call_compiler(options.scala, scalaOutput)
+compilation_time = call_compiler(options.scala, scalaOutput, ["-Yparallel-phases:parser", "-Yparallel-threads", "16"])
 
 print "Compilation done in:", compilation_time, "s"
 
 if options.baseline != "":
     print "Compiling baseline... "
-    base_compilation_time = call_compiler(options.baseline, baselineOutput,
+    base_compilation_time = call_compiler(options.baseline, baselineOutput, [],
                                           ["umad.monitor.enabled=false", "umad.chaos.enabled=false"])
 
     print "Baseline compilation done in:", base_compilation_time, "s (", compilation_time, "for tested scalac)"

@@ -4,6 +4,16 @@ import com.pkukielka.AccessMonitorRewriter;
 import org.junit.Before;
 import org.junit.Test;
 
+class Synchronizations {
+    public static void staticOperation(Runnable op){
+       op.run();
+    }
+
+    public void operation(Runnable op){
+        op.run();
+    }
+}
+
 class MyTest {
     // Without accessing fields/methods method are marked as safe :)
     private int meaningOfLife = 42;
@@ -95,5 +105,20 @@ public class AgentTest {
         for (int i = 0; i < 3; i++) {
             new MyTest().interestingMethod();
         }
+    }
+
+    @Test
+    public void synchronizedIndicator() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(() -> new Synchronizations().operation(() -> t.interestingMethod()));
+
+        assert (!failed);
+    }
+    @Test
+    public void staticSynchronizedIndicator() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(() -> Synchronizations.staticOperation(() -> t.interestingMethod()));
+
+        assert (!failed);
     }
 }

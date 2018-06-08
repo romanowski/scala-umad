@@ -30,12 +30,14 @@ public class AccessMonitorRewriter extends MethodRewriter {
     private static final AppConfig conf = AppConfig.get();
     private static final Map<String, LastAccess> methodCalls = new HashMap<String, LastAccess>();
     private static final Set<String> alreadyReported = new HashSet<String>();
+
     private static final Set<String> methodsMarkedAsSafe = Collections.synchronizedSet(new HashSet<String>());
 
     private final Set<String> safeMethodTypes = new HashSet<String>();
     private final Set<String> safeMethods = new HashSet<String>();
     private final Set<String> safeFieldTypes = new HashSet<String>();
 
+    private static final Set<String> synchronizeIndicators = new HashSet<String>();
 
     public static void clearState() {
         methodCalls.clear();
@@ -57,6 +59,12 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     last.hashCode == current.hashCode &&
                     current.timestamp - last.timestamp <= conf.intervalMs) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+                for(StackTraceElement elem: stackTrace){
+                    String fqn = elem.getClassName() + "." +elem.getMethodName();
+
+                    if (synchronizeIndicators.contains(fqn)) return;
+                }
 
                 String calledFrom = stackTrace[realStackStartIndex + 1].toString();
 
@@ -100,6 +108,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 for (Object methodTpe : safeIndicator.getAnyRefList("methods"))
                     safeMethods.add(clazz + "." + methodTpe);
             }
+
+            synchronizeIndicators.addAll(config.getStringList("synchronizeIndicators"));
         }
     }
 
