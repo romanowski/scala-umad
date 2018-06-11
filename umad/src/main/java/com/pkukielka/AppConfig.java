@@ -8,7 +8,6 @@ public class AppConfig {
     public int intervalMs = 100;
     public boolean shouldThrowExceptions = true;
     public boolean shouldPrintStackTrace = false;
-    public boolean shouldStoreSafeMethod = false;
     public boolean verbose = false;
     private Config monitorConfig;
     private Config chaosConfig;
@@ -50,9 +49,6 @@ public class AppConfig {
 
         if (conf.hasPath("shouldThrowExceptions"))
             this.shouldThrowExceptions = conf.getBoolean("shouldThrowExceptions");
-
-        if (conf.hasPath("shouldStoreSafeMethod"))
-            this.shouldStoreSafeMethod = conf.getBoolean("shouldStoreSafeMethod");
 
         if (conf.hasPath("intervalMs"))
             this.intervalMs = conf.getInt("intervalMs");

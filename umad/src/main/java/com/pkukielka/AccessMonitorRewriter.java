@@ -31,8 +31,6 @@ public class AccessMonitorRewriter extends MethodRewriter {
     private static final Map<String, LastAccess> methodCalls = new HashMap<String, LastAccess>();
     private static final Set<String> alreadyReported = new HashSet<String>();
 
-    private static final Set<String> methodsMarkedAsSafe = Collections.synchronizedSet(new HashSet<String>());
-
     private final Set<String> safeMethodTypes = new HashSet<String>();
     private final Set<String> safeMethods = new HashSet<String>();
     private final Set<String> safeFieldTypes = new HashSet<String>();
@@ -90,10 +88,6 @@ public class AccessMonitorRewriter extends MethodRewriter {
         }
     }
 
-    public static Set<String> getMethodsMarkedAsSafe() {
-        return methodsMarkedAsSafe;
-    }
-
     public AccessMonitorRewriter(Config config) {
         super(config);
         if (isEnabled()) {
@@ -125,10 +119,11 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
     @Override
     public void applyOnMethod(CtMethod editableMethod, String dottedName) throws CannotCompileException {
-        if (isSafe(editableMethod, dottedName)) {
-            if (conf.shouldStoreSafeMethod) methodsMarkedAsSafe.add(editableMethod.getLongName());
-        } else super.applyOnMethod(editableMethod, dottedName);
-
+        if (!isSafe(editableMethod, dottedName)) super.applyOnMethod(editableMethod, dottedName);
+        else if (conf.verbose){
+            String msg = "Method %s was marked as safe.";
+            System.out.println(String.format(msg, editableMethod.getLongName()));
+        }
     }
 
     private static Set<Integer> methodOpcodes = new HashSet<Integer>(Arrays.asList(

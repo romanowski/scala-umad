@@ -3,6 +3,7 @@ package com.pkukielka.test;
 import com.pkukielka.AccessMonitorRewriter;
 import org.junit.Before;
 import org.junit.Test;
+import com.pkukielka.test.scala.SimpleClass;
 
 class Synchronizations {
     public static void staticOperation(Runnable op){
@@ -61,47 +62,31 @@ public class AgentTest {
     @Test
     public void runInterestingMethodInMultipleThreadsWithSingleInstance() throws InterruptedException {
         final MyTest t = new MyTest();
-        startThreads(new Runnable() {
-            public void run() {
-                t.interestingMethod();
-            }
-        });
+        startThreads(t::interestingMethod);
         assert (failed);
     }
 
     @Test
     public void runInterestingMethodInMultipleThreadsWithManyInstances() throws InterruptedException {
-        startThreads(new Runnable() {
-            public void run() {
-                new MyTest().interestingMethod();
-            }
-        });
+        startThreads(() -> new MyTest().interestingMethod());
         assert (!failed);
     }
 
     @Test
     public void runOtherMethodInMultipleThreads() throws InterruptedException {
         final MyTest t = new MyTest();
-        startThreads(new Runnable() {
-            public void run() {
-                t.otherMethod();
-            }
-        });
+        startThreads(t::otherMethod);
         assert (!failed);
     }
 
     @Test
     public void runStaticMethodInMultipleThreads() throws InterruptedException {
-        startThreads(new Runnable() {
-            public void run() {
-                MyTest.interestingStaticMethod();
-            }
-        });
+        startThreads(MyTest::interestingStaticMethod);
         assert (!failed);
     }
 
     @Test
-    public void runInterestingMethodInSingleThread() throws InterruptedException {
+    public void runInterestingMethodInSingleThread() {
         for (int i = 0; i < 3; i++) {
             new MyTest().interestingMethod();
         }
@@ -110,15 +95,24 @@ public class AgentTest {
     @Test
     public void synchronizedIndicator() throws InterruptedException {
         final MyTest t = new MyTest();
-        startThreads(() -> new Synchronizations().operation(() -> t.interestingMethod()));
+        startThreads(() -> new Synchronizations().operation(t::interestingMethod));
 
         assert (!failed);
     }
+
     @Test
-    public void staticSynchronizedIndicator() throws InterruptedException {
-        final MyTest t = new MyTest();
-        startThreads(() -> Synchronizations.staticOperation(() -> t.interestingMethod()));
+    public void threadLocalGetter() throws InterruptedException {
+        final SimpleClass t = new SimpleClass();
+        startThreads(t::testThreadLocal);
 
         assert (!failed);
+    }
+
+    @Test
+    public void threadVar() throws InterruptedException {
+        final SimpleClass t = new SimpleClass();
+        startThreads(t::testVar);
+
+        assert (failed);
     }
 }
