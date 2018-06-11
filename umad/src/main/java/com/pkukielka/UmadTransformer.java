@@ -23,7 +23,7 @@ public class UmadTransformer implements ClassFileTransformer {
         byte[] byteCode = classfileBuffer;
         final String classNameDotted = className.replaceAll("/", ".");
         boolean monitorApply = monitorAccess.shouldTransformClass(classNameDotted);
-        boolean chaosApply = monitorAccess.shouldTransformClass(classNameDotted);
+        boolean chaosApply = chaos.shouldTransformClass(classNameDotted);
 
         if (monitorApply || chaosApply) {
             try {
