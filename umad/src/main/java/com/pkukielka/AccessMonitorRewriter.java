@@ -37,6 +37,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
     private static final Set<String> synchronizeIndicators = new HashSet<String>();
 
+    private static final int STACK_TRACE_LENGHT = 5;
+
     public static void clearState() {
         methodCalls.clear();
         alreadyReported.clear();
@@ -75,7 +77,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
                             last.threadName, current.threadName, methodName);
 
                     StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
-                    for (int i = realStackStartIndex; i < stackTrace.length; i++) {
+                    for (int i = realStackStartIndex; i < realStackStartIndex + STACK_TRACE_LENGHT; i++) {
                         str.append("    ").append(stackTrace[i].toString()).append("\n");
                     }
                     String stack = str.toString();
