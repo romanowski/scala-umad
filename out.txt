@@ -1,0 +1,99 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.pkukielka.umad:umad:jar:1.0-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for net.alchim31.maven:scala-maven-plugin is missing. @ line 153, column 15
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building umad 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.0:enforce (enforce-maven) @ umad ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ umad ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- scala-maven-plugin:3.3.2:add-source (scala-compile-first) @ umad ---
+[INFO] Add Source directory: /home/kromanowski/workspace/scala-umad/umad/src/main/scala
+[INFO] Add Test Source directory: /home/kromanowski/workspace/scala-umad/umad/src/test/scala
+[INFO] 
+[INFO] --- scala-maven-plugin:3.3.2:compile (scala-compile-first) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-assembly-plugin:2.6:single (assemble-all) @ umad ---
+[INFO] Building jar: /home/kromanowski/workspace/scala-umad/umad/target/umad-1.0-SNAPSHOT.jar
+[WARNING] Configuration options: 'appendAssemblyId' is set to false, and 'classifier' is missing.
+Instead of attaching the assembly file: /home/kromanowski/workspace/scala-umad/umad/target/umad-1.0-SNAPSHOT.jar, it will become the file for main project artifact.
+NOTE: If multiple descriptors or descriptor-formats are provided for this project, the value of this file will be non-deterministic!
+[WARNING] Replacing pre-existing project main-artifact file: /home/kromanowski/workspace/scala-umad/umad/target/classes
+with assembly file: /home/kromanowski/workspace/scala-umad/umad/target/umad-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ umad ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- scala-maven-plugin:3.3.2:testCompile (scala-test-compile) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:testCompile (default-testCompile) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.8:test (default-test) @ umad ---
+[INFO] Surefire report directory: /home/kromanowski/workspace/scala-umad/umad/target/surefire-reports
+Starting UmadAgent
+Analyzing method access with shouldThrowExceptions=true and shouldPrintStackTrace=false
+[INFO] Introduce chaos with sleepThreshold=100, methodPercent=10  and sleepTime=100
+[Info] TracingTransformer active
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.pkukielka.test.AgentTest
+Tests run: 8, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.172 sec <<< FAILURE!
+
+Results :
+
+Failed tests: 
+  runInterestingMethodInMultipleThreadsWithSingleInstance(com.pkukielka.test.AgentTest)
+  threadVar(com.pkukielka.test.AgentTest)
+
+Tests run: 8, Failures: 2, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.302 s
+[INFO] Finished at: 2018-06-13T19:47:49+02:00
+[INFO] Final Memory: 20M/396M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.8:test (default-test) on project umad: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /home/kromanowski/workspace/scala-umad/umad/target/surefire-reports for the individual test results.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+Starting UmadAgent
+Analyzing method access with shouldThrowExceptions=false and shouldPrintStackTrace=true
+[Info] TracingTransformer active
+[WARN] Method accessed from multiple threads (worker-refchecks-1, worker-refchecks-2): scala.reflect.internal.SymbolTable.skolemizationLevel_$eq(int)
+    scala.reflect.internal.SymbolTable.skolemizationLevel_$eq(SymbolTable.scala)
+    scala.reflect.internal.tpe.TypeComparers.secondTry$1(TypeComparers.scala:493)
+    scala.reflect.internal.tpe.TypeComparers.firstTry$1(TypeComparers.scala:460)
+    scala.reflect.internal.tpe.TypeComparers.isSubType2(TypeComparers.scala:595)
+    scala.reflect.internal.tpe.TypeComparers.isSubType1(TypeComparers.scala:333)
+
+Compilation done in: 53.0759549141 s

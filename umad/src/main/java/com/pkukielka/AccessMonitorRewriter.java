@@ -51,6 +51,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
             Thread thread = Thread.currentThread();
             Long currentTimestamp = System.currentTimeMillis();
 
+            if(thread.getName().equals("main")) return;
+
             LastAccess current = new LastAccess(currentTimestamp, thread.getId(), hashCode, thread.getName());
             LastAccess last = methodCalls.put(methodName, current);
 
