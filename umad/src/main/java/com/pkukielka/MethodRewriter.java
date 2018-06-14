@@ -7,13 +7,13 @@ import javassist.CtMethod;
 public abstract class MethodRewriter {
   private ClassMethodSelector selector;
   private boolean enabled;
-  private Config c;
+  protected Config config;
 
   public MethodRewriter(Config config){
     enabled = config.hasPath("enabled") && config.getBoolean("enabled");
     if (enabled) selector = new ClassMethodSelector(config);
     else selector = ClassMethodSelector.EMPTY;
-    this.c = config;
+    this.config = config;
   }
 
   public void applyOnMethod(final CtMethod editableMethod,

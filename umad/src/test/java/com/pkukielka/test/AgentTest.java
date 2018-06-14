@@ -1,6 +1,7 @@
 package com.pkukielka.test;
 
 import com.pkukielka.AccessMonitorRewriter;
+import com.pkukielka.test.scala.SynchronizedOps;
 import org.junit.Before;
 import org.junit.Test;
 import com.pkukielka.test.scala.SimpleClass;
@@ -37,10 +38,8 @@ class MyTest {
 public class AgentTest {
     private boolean failed = false;
 
-    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
-        public void uncaughtException(Thread th, Throwable ex) {
-            if (ex.getClass() == IllegalThreadStateException.class) failed = true;
-        }
+    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = (th, ex) -> {
+        if (ex.getClass() == IllegalThreadStateException.class) failed = true;
     };
 
     private void startThreads(Runnable r) throws InterruptedException {
@@ -96,6 +95,14 @@ public class AgentTest {
     public void synchronizedIndicator() throws InterruptedException {
         final MyTest t = new MyTest();
         startThreads(() -> new Synchronizations().operation(t::interestingMethod));
+
+        assert (!failed);
+    }
+
+    @Test
+    public void synchronizedIndicatorWithTrait() throws InterruptedException {
+        final SimpleClass t = new SimpleClass();
+        startThreads(t::setSynchronizedVar);
 
         assert (!failed);
     }
