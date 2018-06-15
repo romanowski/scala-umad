@@ -1,14 +1,11 @@
 package com.pkukielka;
 
 import com.typesafe.config.Config;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtMethod;
+import javassist.*;
 import javassist.bytecode.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
-
 
 class LastAccess {
     long timestamp;
@@ -37,14 +34,16 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
     private static final Set<String> synchronizeIndicators = new HashSet<String>();
 
-    private static final int STACK_TRACE_LENGHT = 5;
+    private static final int STACK_TRACE_LENGTH = 5;
+
+    private static final int realStackStartIndex = 2;
+
+    private static int safetyChecksRecursionLevel = 1;
 
     public static void clearState() {
         methodCalls.clear();
         alreadyReported.clear();
     }
-
-    public static int realStackStartIndex = 2;
 
     public static void logUnsafeMethodCalls(String methodName, String ifCalledFrom, int hashCode) {
         synchronized (conf) {
@@ -77,7 +76,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
                             last.threadName, current.threadName, methodName);
 
                     StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
-                    for (int i = realStackStartIndex; i < realStackStartIndex + STACK_TRACE_LENGHT; i++) {
+                    for (int i = realStackStartIndex; i < Math.min(realStackStartIndex + STACK_TRACE_LENGTH, stackTrace.length); i++) {
                         str.append("    ").append(stackTrace[i].toString()).append("\n");
                     }
                     String stack = str.toString();
@@ -92,6 +91,10 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
     public AccessMonitorRewriter(Config config) {
         super(config);
+
+        if (config.hasPath("safetyChecksRecursionLevel"))
+            safetyChecksRecursionLevel =  config.getInt("safetyChecksRecursionLevel");
+
         if (isEnabled()) {
             String msg = "Analyzing method access with shouldThrowExceptions=%s and shouldPrintStackTrace=%s";
             System.out.println(String.format(msg, conf.shouldThrowExceptions, conf.shouldPrintStackTrace));
@@ -120,8 +123,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
     }
 
     @Override
-    public void applyOnMethod(CtMethod editableMethod, String dottedName) throws CannotCompileException {
-        if (!isSafe(editableMethod, dottedName)) super.applyOnMethod(editableMethod, dottedName);
+    public void applyOnMethod(CtMethod editableMethod, String dottedClassName) throws CannotCompileException {
+        if (!isSafe(editableMethod, safetyChecksRecursionLevel)) super.applyOnMethod(editableMethod, dottedClassName);
         else if (conf.verbose){
             String msg = "Method %s was marked as safe.";
             System.out.println(String.format(msg, editableMethod.getLongName()));
@@ -144,7 +147,23 @@ public class AccessMonitorRewriter extends MethodRewriter {
         return safeMethods.contains(fqn);
     }
 
-    private boolean isSafe(CtMethod editableMethod, String dottedName) {
+    private CtMethod getMethodIfExist(ConstPool constPool, int methodIndex)  {
+        try {
+            String className = constPool.getMethodrefClassName(methodIndex);
+            String methodName = constPool.getMethodrefName(methodIndex);
+            if (methodName.endsWith("$")) methodName = methodName.substring(0, methodName.length() - 1);
+
+            ClassPool classpool = ClassPool.getDefault();
+            CtClass editableClass = classpool.get(className);
+            CtMethod[] declaredMethods = editableClass.getDeclaredMethods(methodName);
+
+            return declaredMethods.length == 1 ? declaredMethods[0] : null;
+        } catch (NotFoundException e) {
+            return null;
+        }
+    }
+
+    private boolean isSafe(CtMethod editableMethod, int safetyChecksRecursionLevel) {
         try {
             CtClass currentClazz = editableMethod.getDeclaringClass();
             ConstPool constPool = currentClazz.getClassFile().getConstPool();
@@ -165,9 +184,16 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     int methodIndex = codeItertator.byteAt(codeIndex + 2) +
                             (codeItertator.byteAt(codeIndex + 1) << 8);
 
-                    if (!isSafeMethod(constPool, methodIndex))
-                        if (!safeMethodTypes.contains(constPool.getMethodrefType(methodIndex)))
+                    if (!isSafeMethod(constPool, methodIndex)) {
+                        if (!safeMethodTypes.contains(constPool.getMethodrefType(methodIndex))) {
+                            if (safetyChecksRecursionLevel > 0) {
+                                CtMethod method = getMethodIfExist(constPool, methodIndex);
+                                return method != null && isSafe(method, safetyChecksRecursionLevel - 1);
+                            }
+
                             return false;
+                        }
+                    }
                 } else switch (opCode) {
                     case Opcode.PUTFIELD:
                     case Opcode.PUTSTATIC:
