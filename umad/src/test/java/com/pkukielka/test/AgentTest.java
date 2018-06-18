@@ -1,29 +1,24 @@
 package com.pkukielka.test;
 
 import com.pkukielka.AccessMonitorRewriter;
+import com.pkukielka.test.scala.Parallel$;
 import com.pkukielka.test.scala.SynchronizedOps;
 import org.junit.Before;
 import org.junit.Test;
 import com.pkukielka.test.scala.SimpleClass;
 
-class Synchronizations {
-    public static void staticOperation(Runnable op){
-       op.run();
-    }
-
-    public void operation(Runnable op){
-        op.run();
-    }
-}
-
 class MyTest {
     // Without accessing fields/methods method are marked as safe :)
     private int meaningOfLife = 42;
     private static int universalRule = -1;
+    private int[] arr = new int[3];
 
+    void writeToArray() {
+        arr[0] = 1;
+    }
 
     int interestingMethod() {
-        return meaningOfLife;
+        return meaningOfLife = 44;
     }
 
     static int interestingStaticMethod() {
@@ -89,14 +84,23 @@ public class AgentTest {
         for (int i = 0; i < 3; i++) {
             new MyTest().interestingMethod();
         }
+        assert (!failed);
     }
 
     @Test
     public void synchronizedIndicator() throws InterruptedException {
         final MyTest t = new MyTest();
-        startThreads(() -> new Synchronizations().operation(t::interestingMethod));
+        startThreads(() -> Parallel$.MODULE$.sync(t::interestingMethod));
 
         assert (!failed);
+    }
+
+    @Test
+    public void arrayWrite() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(t::writeToArray);
+
+        assert (failed);
     }
 
     @Test
@@ -122,4 +126,5 @@ public class AgentTest {
 
         assert (failed);
     }
+
 }
