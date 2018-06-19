@@ -1,7 +1,19 @@
 package com.pkukielka.test.scala
 
+import java.util.{HashSet => JHasjSet}
+import java.lang.{Long => JLong}
+
 object Parallel {
-  def sync[T](block: => T) = block
+  val lock = new Object
+
+  val locks: ThreadLocal[JHasjSet[JLong]] = new ThreadLocal[JHasjSet[JLong]]() {
+    override def initialValue(): JHasjSet[JLong] = new JHasjSet[JLong]()
+  }
+
+  def sync[T](block: => T) = try {
+    locks.get().add(System.identityHashCode(lock).toLong)
+    block
+  } finally locks.get().remove(System.identityHashCode(lock))
 }
 
 trait SynchronizedOps {
