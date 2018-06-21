@@ -33,7 +33,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
     private static final Set<String> alreadyReported = new HashSet<>();
     private static String locks;
 
-    private static final int STACK_TRACE_LENGTH = 10;
+    private static final int STACK_TRACE_LENGTH = 40;
 
     private static final int realStackStartIndex = 2;
 
