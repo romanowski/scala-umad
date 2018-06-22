@@ -60,7 +60,6 @@ baselineOutput = os.path.join(outputBase, "baseline")
 os.mkdir(scalaOutput)
 os.mkdir(baselineOutput)
 
-
 def call_compiler(scalaLocation, output, additionalScalacOptions, additionalConfig=[]):
     agentJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
     configOverrides = map(lambda v: "-J-D" + v, options.config + additionalConfig)
