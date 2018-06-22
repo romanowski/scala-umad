@@ -28,7 +28,7 @@ class LastAccess {
 
 public class AccessMonitorRewriter extends MethodRewriter {
     private static final AppConfig conf = AppConfig.get();
-    private static final Map<String, LastAccess> writeLocations = new HashMap<>();
+    private static final Map<Integer, LastAccess> writeLocations = new HashMap<>();
     private static final Set<String> alreadyReported = new HashSet<>();
 
     private static final ThreadLocal<HashSet<Integer>> locks = ThreadLocal.withInitial(HashSet::new);
@@ -46,7 +46,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
         alreadyReported.clear();
     }
 
-    private static boolean isInStackTrace(String ifCalledFrom,StackTraceElement[] stackTrace) {
+    private static boolean isInStackTrace(String ifCalledFrom, StackTraceElement[] stackTrace) {
         Pattern ifCalledFromPattern = Pattern.compile(ifCalledFrom);
         for (StackTraceElement stackTraceElement : stackTrace) {
             if (ifCalledFromPattern.matcher(stackTraceElement.toString()).matches()) {
@@ -56,41 +56,47 @@ public class AccessMonitorRewriter extends MethodRewriter {
         return false;
     }
 
-    public static void reportWriteToMemory(Object accessedObject, String accessedObjectName, String ifCalledFrom, String fileName, int lineNumber) {
-        int hashCode = accessedObject == null ? 0 : System.identityHashCode(accessedObject);
-
+    public static void reportWriteToMemory(Object accessedObject, String accessedObjectName, String ifCalledFrom, String position) {
         synchronized (conf) {
-            Thread thread = Thread.currentThread();
-            String location = fileName + ":" + lineNumber + "," + accessedObjectName;
+            if (alreadyReported.contains(position)) return;
 
+            Thread thread = Thread.currentThread();
             if (thread.getName().equals("main")) return;
 
+            int hashCode = System.identityHashCode(accessedObject);
+            LastAccess last = writeLocations.get(hashCode);
+            if (last != null && last.threadId == thread.getId() && last.hashCode == hashCode) {
+                return;
+            }
             LastAccess current = new LastAccess(thread.getId(), hashCode, thread.getName(), new HashSet<>(locks.get()));
-            LastAccess last = writeLocations.put(location, current);
+            writeLocations.put(hashCode, current);
 
             if (last != null &&
                     last.threadId != current.threadId &&
                     last.hashCode == current.hashCode &&
                     Collections.disjoint(current.locks, last.locks)) {
-                current.stackTrace = Thread.currentThread().getStackTrace();
+                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+                current.stackTrace = Arrays.copyOf(stackTrace, stackTrace.length);
 
-                // Optimization. We want stack traces from both workers but we do not want to get it until we know we have violation
-                // because it's really slow. So we need 3 hits to reliably get all information.
+                // Optimization. We want stack traces from both workers but we do not want to get it until we know
+                // we have violation because it's really slow. So we need 3 hits to reliably get all information.
                 if (last.stackTrace == null) return;
 
                 if (!ifCalledFrom.isEmpty() && !isInStackTrace(ifCalledFrom, current.stackTrace)) return;
 
-                if (alreadyReported.add(location)) {
+                if (alreadyReported.add(position)) {
                     String msg = String.format("Object %s accessed from multiple threads:", accessedObjectName);
 
                     StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
 
                     str.append(current.threadName).append(" stack trace:\n");
-                    for (int i = realStackStartIndex; i < Math.min(realStackStartIndex + STACK_TRACE_LENGTH, current.stackTrace.length); i++) {
+                    int currentStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, current.stackTrace.length);
+                    for (int i = realStackStartIndex; i < currentStackTraceIndexEnd; i++) {
                         str.append("    ").append(current.stackTrace[i].toString()).append("\n");
                     }
+                    int lastStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, last.stackTrace.length);
                     str.append(last.threadName).append(" stack trace:\n");
-                    for (int i = realStackStartIndex; i < Math.min(realStackStartIndex + STACK_TRACE_LENGTH, last.stackTrace.length); i++) {
+                    for (int i = realStackStartIndex; i < lastStackTraceIndexEnd; i++) {
                         str.append("    ").append(last.stackTrace[i].toString()).append("\n");
                     }
 
@@ -111,6 +117,28 @@ public class AccessMonitorRewriter extends MethodRewriter {
         locks.get().remove(System.identityHashCode(o));
     }
 
+    private boolean hasWriteInstructions(CodeIterator codeIterator) throws BadBytecode {
+        while (codeIterator.hasNext()) {
+            int codeIndex = codeIterator.next();
+            int opCode = codeIterator.byteAt(codeIndex);
+            switch (opCode) {
+                case Opcode.PUTFIELD:
+                case Opcode.PUTSTATIC:
+                case Opcode.MONITORENTER:
+                case Opcode.MONITOREXIT:
+                case Opcode.AASTORE:
+                case Opcode.BASTORE:
+                case Opcode.CASTORE:
+                case Opcode.DASTORE:
+                case Opcode.FASTORE:
+                case Opcode.IASTORE:
+                case Opcode.LASTORE:
+                case Opcode.SASTORE:
+                    return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void editMethod(CtMethod editableMethod, String ifCalledFrom, String dottedClassName) {
@@ -127,45 +155,54 @@ public class AccessMonitorRewriter extends MethodRewriter {
             CodeIterator codeIterator = codeAttr.iterator();
             if (codeIterator == null) return;
 
-            codeAttr.insertLocalVar(codeAttr.getMaxLocals(), 4);
+            if (hasWriteInstructions(codeAttr.iterator())) {
+                codeAttr.insertLocalVar(codeAttr.getMaxLocals(), 4);
 
-            while (codeIterator.hasNext()) {
-                int codeIndex = codeIterator.next();
-                int opCode = codeIterator.byteAt(codeIndex);
-                switch (opCode) {
-                    case Opcode.PUTFIELD:
-                        insertCallToReporterForField(Opcode.DUP, ifCalledFrom, currentClazz, constPool, info, codeAttr, codeIterator, codeIndex);
-                        break;
-                    case Opcode.PUTSTATIC:
-                        insertCallToReporterForField(Opcode.ACONST_NULL, ifCalledFrom, currentClazz, constPool, info, codeAttr, codeIterator, codeIndex);
-                        break;
-                    case Opcode.MONITORENTER:
-                        insertCallToSingleArgFunction("addLockToCurrentThread", constPool, codeIterator, codeIndex);
-                        break;
-                    case Opcode.MONITOREXIT:
-                        insertCallToSingleArgFunction("removeLockFromCurrentThread", constPool, codeIterator, codeIndex);
-                        break;
-                    case Opcode.AASTORE:
-                    case Opcode.BASTORE:
-                    case Opcode.CASTORE:
-                    case Opcode.DASTORE:
-                    case Opcode.FASTORE:
-                    case Opcode.IASTORE:
-                    case Opcode.LASTORE:
-                    case Opcode.SASTORE:
-                        insertCallToReporterForArray(opCode, ifCalledFrom, currentClazz, constPool, info, codeAttr, codeIterator, codeIndex);
-                        break;
+                while (codeIterator.hasNext()) {
+                    int codeIndex = codeIterator.next();
+                    int opCode = codeIterator.byteAt(codeIndex);
+                    switch (opCode) {
+                        case Opcode.PUTFIELD:
+                            insertCallToReporterForField(Opcode.DUP, ifCalledFrom, currentClazz,
+                                    constPool, info, codeAttr, codeIterator, codeIndex);
+                            break;
+                        case Opcode.PUTSTATIC:
+                            insertCallToReporterForField(Opcode.ACONST_NULL, ifCalledFrom, currentClazz,
+                                    constPool, info, codeAttr, codeIterator, codeIndex);
+                            break;
+                        case Opcode.MONITORENTER:
+                            insertCallToSingleArgFunction("addLockToCurrentThread",
+                                    constPool, codeIterator, codeIndex);
+                            break;
+                        case Opcode.MONITOREXIT:
+                            insertCallToSingleArgFunction("removeLockFromCurrentThread",
+                                    constPool, codeIterator, codeIndex);
+                            break;
+                        case Opcode.AASTORE:
+                        case Opcode.BASTORE:
+                        case Opcode.CASTORE:
+                        case Opcode.DASTORE:
+                        case Opcode.FASTORE:
+                        case Opcode.IASTORE:
+                        case Opcode.LASTORE:
+                        case Opcode.SASTORE:
+                            insertCallToReporterForArray(opCode, ifCalledFrom, currentClazz,
+                                    constPool, info, codeAttr, codeIterator, codeIndex);
+                            break;
+                    }
                 }
+
+                codeAttr.computeMaxStack();
             }
 
-            codeAttr.computeMaxStack();
+
         } catch (BadBytecode | NotFoundException e) {
             e.printStackTrace();
         }
     }
 
     private CtClass getArrayElemClass(ClassPool classPool, int opCode) throws NotFoundException {
-        switch(opCode) {
+        switch (opCode) {
             case Opcode.LASTORE:
                 return CtClass.longType;
             case Opcode.FASTORE:
@@ -196,28 +233,33 @@ public class AccessMonitorRewriter extends MethodRewriter {
         return className + "." + name;
     }
 
-    private void insertCallToSingleArgFunction(String funcName, ConstPool constPool, CodeIterator codeIterator, int codeIndex) throws BadBytecode {
+    private void insertCallToSingleArgFunction(String funcName, ConstPool constPool,
+                                               CodeIterator codeIterator, int codeIndex) throws BadBytecode {
         Bytecode code = new Bytecode(constPool);
         code.addOpcode(Opcode.DUP);
         code.addInvokestatic("com.pkukielka.AccessMonitorRewriter", funcName, "(Ljava/lang/Object;)V");
         codeIterator.insert(codeIndex, code.get());
     }
 
-    private void insertCallToReporterForArray(int opCode, String ifCalledFrom, CtClass currentClazz, ConstPool constPool, MethodInfo info,
-                                      CodeAttribute codeAttr, CodeIterator codeIterator, int codeIndex) throws BadBytecode, NotFoundException {
+    private void insertCallToReporterForArray(int opCode, String ifCalledFrom, CtClass currentClazz, ConstPool constPool,
+                                              MethodInfo info, CodeAttribute codeAttr, CodeIterator codeIterator,
+                                              int codeIndex) throws BadBytecode, NotFoundException {
         CtClass elemClass = getArrayElemClass(currentClazz.getClassPool(), opCode);
-        insertCallToReporter(true, Opcode.DUP, "", elemClass, ifCalledFrom, currentClazz, constPool, info, codeAttr, codeIterator, codeIndex);
+        insertCallToReporter(true, Opcode.DUP, "", elemClass, ifCalledFrom, currentClazz, constPool,
+                info, codeAttr, codeIterator, codeIndex);
     }
 
-    private void insertCallToReporterForField(int prepareThisOpcode, String ifCalledFrom, CtClass currentClazz, ConstPool constPool, MethodInfo info,
-                                              CodeAttribute codeAttr, CodeIterator codeIterator, int codeIndex) throws BadBytecode, NotFoundException {
+    private void insertCallToReporterForField(int prepareThisOpcode, String ifCalledFrom, CtClass currentClazz, ConstPool constPool,
+                                              MethodInfo info, CodeAttribute codeAttr, CodeIterator codeIterator,
+                                              int codeIndex) throws BadBytecode, NotFoundException {
         int fieldIndex = codeIterator.byteAt(codeIndex + 2) + (codeIterator.byteAt(codeIndex + 1) << 8);
         CtClass elemClass = getFieldCtClass(currentClazz, constPool, fieldIndex);
         String fqn = getFieldFqn(constPool, fieldIndex);
-        insertCallToReporter(false, prepareThisOpcode, fqn, elemClass, ifCalledFrom, currentClazz, constPool, info, codeAttr, codeIterator, codeIndex);
+        insertCallToReporter(false, prepareThisOpcode, fqn, elemClass, ifCalledFrom, currentClazz, constPool,
+                info, codeAttr, codeIterator, codeIndex);
     }
 
-    private void insertCallToReporter(boolean isArray, int prepareThisOpcode,  String fqn, CtClass elemClass,
+    private void insertCallToReporter(boolean isArray, int prepareThisOpcode, String fqn, CtClass elemClass,
                                       String ifCalledFrom, CtClass currentClazz, ConstPool constPool, MethodInfo info,
                                       CodeAttribute codeAttr, CodeIterator codeIterator, int codeIndex) throws BadBytecode {
         Bytecode code = new Bytecode(constPool);
@@ -229,11 +271,13 @@ public class AccessMonitorRewriter extends MethodRewriter {
         code.addOpcode(prepareThisOpcode);
         code.addLdc(fqn);
         code.addLdc(ifCalledFrom);
-        code.addLdc(currentClazz.getClassFile().getSourceFile());
-        code.addIconst(info.getLineNumber(codeIndex));
-        code.addInvokestatic("com.pkukielka.AccessMonitorRewriter", "reportWriteToMemory", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V");
+        code.addLdc(currentClazz.getClassFile().getSourceFile() + info.getLineNumber(codeIndex));
+        code.addInvokestatic(
+                "com.pkukielka.AccessMonitorRewriter",
+                "reportWriteToMemory",
+                "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 
-        if (isArray)  code.addLoad(maxLocals - 2, CtClass.intType);
+        if (isArray) code.addLoad(maxLocals - 2, CtClass.intType);
         code.addLoad(maxLocals - 4, elemClass);
 
         codeIterator.insert(codeIndex, code.get());
