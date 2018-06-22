@@ -7,19 +7,24 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.*;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Pattern;
 
 class LastAccess {
     long threadId;
-    int hashCode;
+    WeakReference<Object> ths;
     StackTraceElement[] stackTrace;
     String threadName;
     Set<Integer> locks;
 
-    LastAccess(long threadId, int hashCode, String threadName, Set<Integer> locks) {
+    int thisHashCode() {
+        return System.identityHashCode(ths.get());
+    }
+
+    LastAccess(long threadId, WeakReference<Object> ths, String threadName, Set<Integer> locks) {
         this.threadId = threadId;
-        this.hashCode = hashCode;
+        this.ths = ths;
         this.stackTrace = null;
         this.threadName = threadName;
         this.locks = locks;
@@ -63,17 +68,28 @@ public class AccessMonitorRewriter extends MethodRewriter {
             Thread thread = Thread.currentThread();
             if (thread.getName().equals("main")) return;
 
-            int hashCode = System.identityHashCode(accessedObject);
+            Object key = accessedObject == null ? accessedObjectName : accessedObject;
+            int hashCode = System.identityHashCode(key);
             LastAccess last = writeLocations.get(hashCode);
-            if (last != null && last.threadId == thread.getId() && last.hashCode == hashCode) {
-                return;
+
+            // Hacky and ugly but fairly effective garbage collector.
+            // Using WeakHashMap would be preferable but it doesn't allow to add partially constructed objects.
+            // I didn't found a quick way to discover if we are in the constructor call chain.
+            if (last != null) {
+                if (last.ths.get() == null) {
+                    writeLocations.entrySet().removeIf(entry -> entry.getValue().ths.get() == null);
+                    last = null;
+                } else if (last.threadId == thread.getId() && last.thisHashCode() == hashCode) {
+                    return;
+                }
             }
-            LastAccess current = new LastAccess(thread.getId(), hashCode, thread.getName(), new HashSet<>(locks.get()));
+
+            LastAccess current = new LastAccess(thread.getId(), new WeakReference<>(key), thread.getName(), new HashSet<>(locks.get()));
             writeLocations.put(hashCode, current);
 
             if (last != null &&
                     last.threadId != current.threadId &&
-                    last.hashCode == current.hashCode &&
+                    last.thisHashCode() == hashCode &&
                     Collections.disjoint(current.locks, last.locks)) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
                 current.stackTrace = Arrays.copyOf(stackTrace, stackTrace.length);
@@ -94,8 +110,9 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     for (int i = realStackStartIndex; i < currentStackTraceIndexEnd; i++) {
                         str.append("    ").append(current.stackTrace[i].toString()).append("\n");
                     }
-                    int lastStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, last.stackTrace.length);
+
                     str.append(last.threadName).append(" stack trace:\n");
+                    int lastStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, last.stackTrace.length);
                     for (int i = realStackStartIndex; i < lastStackTraceIndexEnd; i++) {
                         str.append("    ").append(last.stackTrace[i].toString()).append("\n");
                     }
@@ -147,7 +164,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
             ConstPool constPool = currentClazz.getClassFile().getConstPool();
 
             MethodInfo info = editableMethod.getMethodInfo();
-            if (info == null) return;
+            if (info == null || info.isConstructor()) return;
 
             CodeAttribute codeAttr = info.getCodeAttribute();
             if (codeAttr == null) return;
