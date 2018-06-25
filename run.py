@@ -42,7 +42,7 @@ jars = findFiles(os.path.join(corpus, "lib"), r'\.jar')
 scalaJars = findFiles(os.path.join(options.scala, "lib"), r'\.jar')
 
 scalacOptions = ["-encoding", "UTF-8", "-target:jvm-1.8", "-feature", "-unchecked", "-nowarn",
-                 "-Xlog-reflective-calls", "-Xlint", "-opt:l:none", "-J-XX:MaxInlineSize=0"]
+                 "-Xlog-reflective-calls", "-Xlint", "-opt:l:none", "-J-XX:MaxInlineSize=0", "-J-Xmx6g"]
 
 debugOptions = []
 if options.debugPort:
@@ -59,7 +59,6 @@ baselineOutput = os.path.join(outputBase, "baseline")
 
 os.mkdir(scalaOutput)
 os.mkdir(baselineOutput)
-
 
 def call_compiler(scalaLocation, output, additionalScalacOptions, additionalConfig=[]):
     agentJar = os.path.join(".", "umad", "target", "umad-1.0-SNAPSHOT.jar")
