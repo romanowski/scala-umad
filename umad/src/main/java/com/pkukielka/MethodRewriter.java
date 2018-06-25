@@ -20,12 +20,12 @@ public abstract class MethodRewriter {
                                      String dottedName) throws CannotCompileException {
     ClassMethodSelector.ClassMethodDefinition md = selector.findMatchingDefinition(dottedName, editableMethod);
     if (md != null) {
-      editMethod(editableMethod, md.ifCalledFrom, dottedName);
+      editMethod(editableMethod, dottedName);
     }
   }
 
 
-  protected abstract void editMethod(final CtMethod editableMethod, String ifCalledFrom, String dottedName) throws CannotCompileException;
+  protected abstract void editMethod(final CtMethod editableMethod, String dottedName) throws CannotCompileException;
 
   public boolean shouldTransformClass(final String classNameDotted) {
     return enabled && selector.shouldTransformClass(classNameDotted);

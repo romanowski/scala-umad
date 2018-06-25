@@ -24,15 +24,13 @@ public class ClassMethodSelector {
         for (Config include : config.getConfigList("includes")) {
             includes.add(new ClassMethodDefinition(
                     include.getString("class"),
-                    include.getString("method"),
-                    include.hasPath("ifCalledFrom") ? include.getString("ifCalledFrom") : ""));
+                    include.getString("method")));
         }
         if(config.hasPath("excludes"))
             for (Config exclude : config.getConfigList("excludes")) {
                 excludes.add(new ClassMethodDefinition(
                         exclude.getString("class"),
-                        exclude.getString("method"),
-                        ""
+                        exclude.getString("method")
                 ));
             }
     }
@@ -69,13 +67,11 @@ public class ClassMethodSelector {
     static class ClassMethodDefinition {
         final Pattern classRegex;
         final Pattern methodRegex;
-        final String ifCalledFrom;
 
 
-        ClassMethodDefinition(String classRegex, String methodRegex, String ifCalledFrom) {
+        ClassMethodDefinition(String classRegex, String methodRegex) {
             this.classRegex = Pattern.compile(classRegex);
             this.methodRegex = Pattern.compile(methodRegex);
-            this.ifCalledFrom = ifCalledFrom;
         }
     }
 }
