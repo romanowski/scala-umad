@@ -35,6 +35,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
     private static final AppConfig conf = AppConfig.get();
     private static final Map<Integer, LastAccess> writeLocations = new HashMap<>();
     private static final Set<String> alreadyReported = new HashSet<>();
+    private static final Pattern ifCalledFromPattern =
+            Pattern.compile(conf.getMonitorConfig().getString("ifCalledFrom"));
 
     private static final ThreadLocal<HashSet<Integer>> locks = ThreadLocal.withInitial(HashSet::new);
 
@@ -51,9 +53,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
         alreadyReported.clear();
     }
 
-    private static boolean isInStackTrace(String ifCalledFrom, StackTraceElement[] stackTrace) {
-        Pattern ifCalledFromPattern = Pattern.compile(ifCalledFrom);
-        for (StackTraceElement stackTraceElement : stackTrace) {
+    private static boolean isInStackTrace(StackTraceElement[] stackTrace) {
+         for (StackTraceElement stackTraceElement : stackTrace) {
             if (ifCalledFromPattern.matcher(stackTraceElement.toString()).matches()) {
                 return true;
             }
@@ -61,7 +62,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
         return false;
     }
 
-    public static void reportWriteToMemory(Object accessedObject, String accessedObjectName, String ifCalledFrom, String position) {
+    public static void reportWriteToMemory(Object accessedObject, String accessedObjectName, String position) {
         synchronized (conf) {
             if (alreadyReported.contains(position)) return;
 
@@ -98,10 +99,13 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 // we have violation because it's really slow. So we need 3 hits to reliably get all information.
                 if (last.stackTrace == null) return;
 
-                if (!ifCalledFrom.isEmpty() && !isInStackTrace(ifCalledFrom, current.stackTrace)) return;
+                if (!isInStackTrace(current.stackTrace)) return;
 
                 if (alreadyReported.add(position)) {
-                    String msg = String.format("Object %s accessed from multiple threads:", accessedObjectName);
+                    String msg = String.format(
+                            "Object %s accessed from multiple threads in %s:",
+                            accessedObjectName,
+                            position);
 
                     StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
 
@@ -158,7 +162,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
     }
 
     @Override
-    protected void editMethod(CtMethod editableMethod, String ifCalledFrom, String dottedClassName) {
+    protected void editMethod(CtMethod editableMethod, String dottedClassName) {
         try {
             CtClass currentClazz = editableMethod.getDeclaringClass();
             ConstPool constPool = currentClazz.getClassFile().getConstPool();
@@ -180,11 +184,11 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     int opCode = codeIterator.byteAt(codeIndex);
                     switch (opCode) {
                         case Opcode.PUTFIELD:
-                            insertCallToReporterForField(Opcode.DUP, ifCalledFrom, currentClazz,
+                            insertCallToReporterForField(Opcode.DUP, currentClazz,
                                     constPool, info, codeAttr, codeIterator, codeIndex);
                             break;
                         case Opcode.PUTSTATIC:
-                            insertCallToReporterForField(Opcode.ACONST_NULL, ifCalledFrom, currentClazz,
+                            insertCallToReporterForField(Opcode.ACONST_NULL, currentClazz,
                                     constPool, info, codeAttr, codeIterator, codeIndex);
                             break;
                         case Opcode.MONITORENTER:
@@ -203,7 +207,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
                         case Opcode.IASTORE:
                         case Opcode.LASTORE:
                         case Opcode.SASTORE:
-                            insertCallToReporterForArray(opCode, ifCalledFrom, currentClazz,
+                            insertCallToReporterForArray(opCode, currentClazz,
                                     constPool, info, codeAttr, codeIterator, codeIndex);
                             break;
                     }
@@ -258,26 +262,26 @@ public class AccessMonitorRewriter extends MethodRewriter {
         codeIterator.insert(codeIndex, code.get());
     }
 
-    private void insertCallToReporterForArray(int opCode, String ifCalledFrom, CtClass currentClazz, ConstPool constPool,
+    private void insertCallToReporterForArray(int opCode, CtClass currentClazz, ConstPool constPool,
                                               MethodInfo info, CodeAttribute codeAttr, CodeIterator codeIterator,
                                               int codeIndex) throws BadBytecode, NotFoundException {
         CtClass elemClass = getArrayElemClass(currentClazz.getClassPool(), opCode);
-        insertCallToReporter(true, Opcode.DUP, "", elemClass, ifCalledFrom, currentClazz, constPool,
+        insertCallToReporter(true, Opcode.DUP, "", elemClass, currentClazz, constPool,
                 info, codeAttr, codeIterator, codeIndex);
     }
 
-    private void insertCallToReporterForField(int prepareThisOpcode, String ifCalledFrom, CtClass currentClazz, ConstPool constPool,
+    private void insertCallToReporterForField(int prepareThisOpcode, CtClass currentClazz, ConstPool constPool,
                                               MethodInfo info, CodeAttribute codeAttr, CodeIterator codeIterator,
                                               int codeIndex) throws BadBytecode, NotFoundException {
         int fieldIndex = codeIterator.byteAt(codeIndex + 2) + (codeIterator.byteAt(codeIndex + 1) << 8);
         CtClass elemClass = getFieldCtClass(currentClazz, constPool, fieldIndex);
         String fqn = getFieldFqn(constPool, fieldIndex);
-        insertCallToReporter(false, prepareThisOpcode, fqn, elemClass, ifCalledFrom, currentClazz, constPool,
+        insertCallToReporter(false, prepareThisOpcode, fqn, elemClass, currentClazz, constPool,
                 info, codeAttr, codeIterator, codeIndex);
     }
 
     private void insertCallToReporter(boolean isArray, int prepareThisOpcode, String fqn, CtClass elemClass,
-                                      String ifCalledFrom, CtClass currentClazz, ConstPool constPool, MethodInfo info,
+                                      CtClass currentClazz, ConstPool constPool, MethodInfo info,
                                       CodeAttribute codeAttr, CodeIterator codeIterator, int codeIndex) throws BadBytecode {
         Bytecode code = new Bytecode(constPool);
         int maxLocals = codeAttr.getMaxLocals();
@@ -287,12 +291,11 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
         code.addOpcode(prepareThisOpcode);
         code.addLdc(fqn);
-        code.addLdc(ifCalledFrom);
-        code.addLdc(currentClazz.getClassFile().getSourceFile() + info.getLineNumber(codeIndex));
+        code.addLdc(currentClazz.getClassFile().getSourceFile() + info.getLineNumber(codeIndex) + "(" + info.getName() + ")");
         code.addInvokestatic(
                 "com.pkukielka.AccessMonitorRewriter",
                 "reportWriteToMemory",
-                "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+                "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V");
 
         if (isArray) code.addLoad(maxLocals - 2, CtClass.intType);
         code.addLoad(maxLocals - 4, elemClass);

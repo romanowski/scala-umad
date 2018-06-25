@@ -40,7 +40,7 @@ public class ChaosRewriter extends MethodRewriter {
   }
 
   @Override
-  protected void editMethod(final CtMethod editableMethod, String ifCalledFrom, String dottedName) throws CannotCompileException {
+  protected void editMethod(final CtMethod editableMethod, String dottedName) throws CannotCompileException {
     if (random.nextInt(100) < methodPercent) {
       String code = "com.pkukielka.ChaosRewriter.chaoticSleep(%s, %s);";
       System.out.println("Transforming: " + editableMethod.getLongName() + " from " + dottedName);
