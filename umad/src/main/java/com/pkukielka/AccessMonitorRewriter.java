@@ -13,21 +13,27 @@ import java.util.regex.Pattern;
 
 class LastAccess {
     long threadId;
+    String accessedObjectName;
     WeakReference<Object> ths;
     StackTraceElement[] stackTrace;
     String threadName;
-    Set<Integer> locks;
+    Set<Set<Integer>> locks = new HashSet<>();
 
-    int thisHashCode() {
-        return System.identityHashCode(ths.get());
+    int identityKey() {
+        return (System.identityHashCode(ths.get()) + accessedObjectName).hashCode();
     }
 
-    LastAccess(long threadId, WeakReference<Object> ths, String threadName, Set<Integer> locks) {
+    void addLocks(Set<Integer> currentLocks) {
+        if (!currentLocks.isEmpty()) locks.add(new HashSet<>(currentLocks));
+    }
+
+    LastAccess(long threadId, String accessedObjectName, WeakReference<Object> ths, String threadName, Set<Integer> locks) {
         this.threadId = threadId;
+        this.accessedObjectName = accessedObjectName;
         this.ths = ths;
         this.stackTrace = null;
         this.threadName = threadName;
-        this.locks = locks;
+        addLocks(locks);
     }
 }
 
@@ -44,11 +50,14 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
     private static final int realStackStartIndex = 2;
 
+    public static final List<String> warnings = new LinkedList<>();
+
     AccessMonitorRewriter(Config config) {
         super(config);
     }
 
     public static void clearState() {
+        warnings.clear();
         writeLocations.clear();
         alreadyReported.clear();
     }
@@ -62,6 +71,23 @@ public class AccessMonitorRewriter extends MethodRewriter {
         return false;
     }
 
+    private static void logWarn(String msg) {
+        String warn = "[WARN] " + msg;
+        if (conf.shouldPrintWarnings) System.out.println(warn);
+        warnings.add(warn);
+    }
+
+    private static boolean disjoint(Set<Set<Integer>> s1, Set<Set<Integer>> s2) {
+        if (s1.isEmpty() || s2.isEmpty()) return true;
+
+        for (Set<?> e1 : s1) {
+            for (Set<?> e2 : s2) {
+                if (Collections.disjoint(e1, e2)) return true;
+            }
+        }
+        return false;
+    }
+
     public static void reportWriteToMemory(Object accessedObject, String accessedObjectName, String position) {
         synchronized (conf) {
             if (alreadyReported.contains(position)) return;
@@ -69,29 +95,31 @@ public class AccessMonitorRewriter extends MethodRewriter {
             Thread thread = Thread.currentThread();
             if (thread.getName().equals("main")) return;
 
-            Object key = accessedObject == null ? accessedObjectName : accessedObject;
-            int hashCode = System.identityHashCode(key);
-            LastAccess last = writeLocations.get(hashCode);
+            Object obj = accessedObject == null ? accessedObjectName : accessedObject;
+            int identityKey = (System.identityHashCode(obj) + accessedObjectName).hashCode();
+            LastAccess last = writeLocations.get(identityKey);
 
             // Hacky and ugly but fairly effective garbage collector.
             // Using WeakHashMap would be preferable but it doesn't allow to add partially constructed objects.
             // I didn't found a quick way to discover if we are in the constructor call chain.
             if (last != null) {
-                if (last.ths.get() == null) {
+                Object lastThs = last.ths.get();
+                if (lastThs == null) {
                     writeLocations.entrySet().removeIf(entry -> entry.getValue().ths.get() == null);
                     last = null;
-                } else if (last.threadId == thread.getId() && last.thisHashCode() == hashCode) {
+                } else if (last.threadId == thread.getId() && last.identityKey() == identityKey) {
+                    last.addLocks(locks.get());
                     return;
                 }
             }
 
-            LastAccess current = new LastAccess(thread.getId(), new WeakReference<>(key), thread.getName(), new HashSet<>(locks.get()));
-            writeLocations.put(hashCode, current);
+            LastAccess current = new LastAccess(thread.getId(), accessedObjectName, new WeakReference<>(obj), thread.getName(), locks.get());
+            writeLocations.put(identityKey, current);
 
             if (last != null &&
                     last.threadId != current.threadId &&
-                    last.thisHashCode() == hashCode &&
-                    Collections.disjoint(current.locks, last.locks)) {
+                    last.identityKey() == identityKey &&
+                    disjoint(current.locks, last.locks)) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
                 current.stackTrace = Arrays.copyOf(stackTrace, stackTrace.length);
 
@@ -102,12 +130,10 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 if (!isInStackTrace(current.stackTrace)) return;
 
                 if (alreadyReported.add(position)) {
-                    String msg = String.format(
-                            "Object %s accessed from multiple threads in %s:",
+                    StringBuilder str = new StringBuilder(String.format(
+                            "Object %s accessed from multiple threads in %s:\n",
                             accessedObjectName,
-                            position);
-
-                    StringBuilder str = new StringBuilder("[WARN] " + msg + "\n");
+                            position));
 
                     str.append(current.threadName).append(" stack trace:\n");
                     int currentStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, current.stackTrace.length);
@@ -121,10 +147,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
                         str.append("    ").append(last.stackTrace[i].toString()).append("\n");
                     }
 
-                    String stack = str.toString();
-
-                    if (conf.shouldPrintStackTrace) System.out.println(stack);
-                    if (conf.shouldThrowExceptions) throw new IllegalThreadStateException(msg);
+                    logWarn(str.toString());
                 }
             }
         }

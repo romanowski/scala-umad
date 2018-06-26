@@ -5,9 +5,7 @@ import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
 
 public class AppConfig {
-    public int intervalMs = 100;
-    public boolean shouldThrowExceptions = true;
-    public boolean shouldPrintStackTrace = false;
+    public boolean shouldPrintWarnings = true;
     public boolean verbose = false;
     private Config monitorConfig;
     private Config chaosConfig;
@@ -47,14 +45,8 @@ public class AppConfig {
         this.monitorConfig = loadConfig("monitor", conf);
         this.chaosConfig = loadConfig("chaos", conf);
 
-        if (conf.hasPath("shouldThrowExceptions"))
-            this.shouldThrowExceptions = conf.getBoolean("shouldThrowExceptions");
-
-        if (conf.hasPath("intervalMs"))
-            this.intervalMs = conf.getInt("intervalMs");
-
-        if (conf.hasPath("shouldPrintStackTrace"))
-            this.shouldPrintStackTrace = conf.getBoolean("shouldPrintStackTrace");
+        if (conf.hasPath("shouldPrintWarnings"))
+            this.shouldPrintWarnings = conf.getBoolean("shouldPrintWarnings");
 
         if (conf.hasPath("verbose"))
             this.verbose = conf.getBoolean("verbose");

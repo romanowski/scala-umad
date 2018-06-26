@@ -2,7 +2,6 @@ package com.pkukielka.test;
 
 import com.pkukielka.AccessMonitorRewriter;
 import com.pkukielka.test.scala.Parallel$;
-import com.pkukielka.test.scala.SynchronizedOps;
 import org.junit.Before;
 import org.junit.Test;
 import com.pkukielka.test.scala.SimpleClass;
@@ -10,6 +9,7 @@ import com.pkukielka.test.scala.SimpleClass;
 class MyTest {
     // Without accessing fields/methods method are marked as safe :)
     private int meaningOfLife = 42;
+    private double d = 1.2;
     private static int universalRule = -1;
     private static int globalVar = 0;
     private static String globalObj = "x";
@@ -18,6 +18,14 @@ class MyTest {
     private double[] darr = new double[3];
     private long[] larr = new long[3];
     private String[] sarr = new String[3];
+
+    void changeDouble() {
+        d = 3.4;
+    }
+
+    void changeMeaningOfLife() {
+        meaningOfLife = 44;
+    }
 
     void changeGlobalVar() {
         int x = 777;
@@ -78,25 +86,29 @@ class MyTest {
 }
 
 public class AgentTest {
-    private boolean failed = false;
+    private boolean hasFailed() {
+        return AccessMonitorRewriter.warnings.size() > 0;
+    }
 
-    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = (th, ex) -> {
-        if (ex.getClass() == IllegalThreadStateException.class) failed = true;
-    };
+    private int violationsCount() {
+        return AccessMonitorRewriter.warnings.size();
+    }
 
-    private void startThreads(Runnable r) throws InterruptedException {
-        for (int i = 0; i < 3; i++) {
+    private void startThreads(Runnable r, int n) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
             Thread t = new Thread(r);
-            t.setUncaughtExceptionHandler(uncaughtExceptionHandler);
             t.start();
             t.join();
         }
     }
 
+    private void startThreads(Runnable r) throws InterruptedException {
+        startThreads(r, 3);
+    }
+
     @Before
     public void setUp() {
         AccessMonitorRewriter.clearState();
-        failed = false;
     }
 
 
@@ -104,26 +116,25 @@ public class AgentTest {
     public void runInterestingMethodInMultipleThreadsWithSingleInstance() throws InterruptedException {
         final MyTest t = new MyTest();
         startThreads(t::interestingMethod);
-        assert (failed);
     }
 
     @Test
     public void runInterestingMethodInMultipleThreadsWithManyInstances() throws InterruptedException {
         startThreads(() -> new MyTest().interestingMethod());
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
     public void runOtherMethodInMultipleThreads() throws InterruptedException {
         final MyTest t = new MyTest();
         startThreads(t::otherMethod);
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
     public void runStaticMethodInMultipleThreads() throws InterruptedException {
         startThreads(MyTest::interestingStaticMethod);
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
@@ -131,7 +142,7 @@ public class AgentTest {
         for (int i = 0; i < 3; i++) {
             new MyTest().interestingMethod();
         }
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
@@ -139,7 +150,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(() -> Parallel$.MODULE$.sync(t::interestingMethod));
 
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
@@ -147,7 +158,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::writeToIntArray);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
     @Test
@@ -155,7 +166,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::writeToDoubleArray);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
     @Test
@@ -163,7 +174,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::writeToLongArray);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
     @Test
@@ -171,7 +182,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::writeToStringArray);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
     @Test
@@ -179,7 +190,16 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::changeGlobalVar);
 
-        assert (failed);
+        assert (hasFailed());
+    }
+
+    @Test
+    public void testMultipleVarsAccessFromTheSameObject() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(t::changeMeaningOfLife, 1);
+        startThreads(t::changeDouble, 1);
+
+        assert (!hasFailed());
     }
 
     @Test
@@ -187,7 +207,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::changeGlobalVarCompResult);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
     @Test
@@ -195,7 +215,7 @@ public class AgentTest {
         final MyTest t = new MyTest();
         startThreads(t::changeGlobalDoubleVar);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
     @Test
@@ -203,7 +223,7 @@ public class AgentTest {
         final SimpleClass t = new SimpleClass();
         startThreads(t::setSynchronizedVar);
 
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
@@ -211,7 +231,7 @@ public class AgentTest {
         final SimpleClass t = new SimpleClass();
         startThreads(t::testThreadLocal);
 
-        assert (!failed);
+        assert (!hasFailed());
     }
 
     @Test
@@ -219,7 +239,14 @@ public class AgentTest {
         final SimpleClass t = new SimpleClass();
         startThreads(t::testVar);
 
-        assert (failed);
+        assert (hasFailed());
     }
 
+    @Test
+    public void testSynchronizationWithDifferentLocks() throws InterruptedException {
+        final SimpleClass t = new SimpleClass();
+        startThreads(t::testSynchronizationWithDifferentLocks);
+
+        assert (hasFailed());
+    }
 }
