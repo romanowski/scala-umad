@@ -18,6 +18,8 @@ public abstract class MethodRewriter {
 
   public void applyOnMethod(final CtMethod editableMethod,
                                      String dottedName) throws CannotCompileException {
+    if (dottedName.contains(".javax.management.") || dottedName.equals("com.pkukielka.LastAccess")) return;
+
     ClassMethodSelector.ClassMethodDefinition md = selector.findMatchingDefinition(dottedName, editableMethod);
     if (md != null) {
       editMethod(editableMethod, dottedName);

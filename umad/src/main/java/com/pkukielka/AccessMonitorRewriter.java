@@ -11,35 +11,115 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Pattern;
 
+class AccessKey {
+    private String fieldName;
+    private WeakReference<Object> obj;
+    private int hash;
+
+    public volatile static boolean needsCleanup = false;
+
+    public AccessKey(String fieldName, Object obj){
+        this.fieldName = fieldName;
+        this.obj = new WeakReference<>(obj);
+        this.hash = System.identityHashCode(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return hash * 37 + fieldName.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof AccessKey){
+            AccessKey other = (AccessKey) obj;
+            Object pointingObj = this.obj.get();
+            if(pointingObj == null){
+                needsCleanup = true;
+                return false;
+            }
+            return other.obj.get() == pointingObj && other.fieldName.equals(this.fieldName);
+        }
+        return false;
+    }
+
+    public Object getObj() {
+        return obj.get();
+    }
+}
+
 class LastAccess {
     long threadId;
-    String accessedObjectName;
-    WeakReference<Object> ths;
     StackTraceElement[] stackTrace;
     String threadName;
-    Set<Set<Integer>> locks = new HashSet<>();
+    int[] locks = new int[8];
+    int firstFree = 0;
+    private final static int MARKER =  System.identityHashCode(null);
 
-    int identityKey() {
-        return (System.identityHashCode(ths.get()) + accessedObjectName).hashCode();
-    }
-
-    void addLocks(Set<Integer> currentLocks) {
-        if (!currentLocks.isEmpty()) locks.add(new HashSet<>(currentLocks));
-    }
-
-    LastAccess(long threadId, String accessedObjectName, WeakReference<Object> ths, String threadName, Set<Integer> locks) {
+    LastAccess(long threadId, String threadName, Set<Integer> locks) {
         this.threadId = threadId;
-        this.accessedObjectName = accessedObjectName;
-        this.ths = ths;
         this.stackTrace = null;
         this.threadName = threadName;
         addLocks(locks);
+    }
+
+    void addLocks(Set<Integer> currentLocks) {
+        if (currentLocks.isEmpty()) return;
+
+        int newCount = currentLocks.size();
+        int[] currentLocksA = new int[newCount];
+
+        int j = 0;
+        for(Integer lock: currentLocks){
+            currentLocksA[j] = lock;
+            j++;
+        }
+
+        int similarCount = 0;
+        for (j = 0; j < firstFree; j++){
+            if (similarCount == currentLocksA.length) return;
+            int current = locks[j];
+            if (current == MARKER) similarCount = 0;
+            else {
+                if (currentLocksA[similarCount] == locks[j]) similarCount++;
+                else similarCount = 0;
+            }
+        }
+
+        if (firstFree + newCount + 1 > locks.length){
+            int[] newLocks = new int[Math.max(locks.length * 2, locks.length + newCount + 1)];
+            System.arraycopy(locks, 0, newLocks, 0, firstFree);
+            locks = newLocks;
+        }
+        int i = firstFree;
+        firstFree = firstFree + newCount + 1;
+        for(Integer lock: currentLocks){
+            locks[i] = lock;
+            i++;
+        }
+        locks[i] = MARKER;
+    }
+
+    public boolean safeAccessed(Set<Integer> currentLocks){
+        if (currentLocks.isEmpty()) return false;
+
+        boolean seenLock = false;
+        for(int i = 0; i < firstFree; i++){
+            int current = locks[i];
+            if (current == MARKER) {
+                if (!seenLock)
+                    return false;
+                seenLock = false;
+            } else if (!seenLock) seenLock = currentLocks.contains(current);
+        }
+        return firstFree != 0;
     }
 }
 
 public class AccessMonitorRewriter extends MethodRewriter {
     private static final AppConfig conf = AppConfig.get();
-    private static final Map<Integer, LastAccess> writeLocations = new HashMap<>();
+    private static final Map<AccessKey, LastAccess> writeLocations = new HashMap<>();
     private static final Set<String> alreadyReported = new HashSet<>();
     private static final Pattern ifCalledFromPattern =
             Pattern.compile(conf.getMonitorConfig().getString("ifCalledFrom"));
@@ -77,79 +157,72 @@ public class AccessMonitorRewriter extends MethodRewriter {
         warnings.add(warn);
     }
 
-    private static boolean disjoint(Set<Set<Integer>> s1, Set<Set<Integer>> s2) {
-        if (s1.isEmpty() || s2.isEmpty()) return true;
+    private static void potentialValioation(LastAccess last, String position, String fieldName){
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
-        for (Set<?> e1 : s1) {
-            for (Set<?> e2 : s2) {
-                if (Collections.disjoint(e1, e2)) return true;
-            }
+        // Optimization. We want stack traces from both workers but we do not want to get it until we know
+        // we have violation because it's really slow. So we need 3 hits to reliably get all information.
+        if (last.stackTrace == null) {
+            // TODO we need to store such cases somewhere
+            last.stackTrace = stackTrace;
+            return;
         }
-        return false;
+
+        if (!isInStackTrace(stackTrace)) return;
+
+        if (alreadyReported.add(position)) {
+            StringBuilder str = new StringBuilder(String.format(
+                    "Object %s accessed from multiple threads in %s:\n",
+                    fieldName,
+                    position));
+
+            String threadName = Thread.currentThread().getName();
+
+            str.append(threadName).append(" stack trace:\n");
+            int currentStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, stackTrace.length);
+            for (int i = realStackStartIndex; i < currentStackTraceIndexEnd; i++) {
+                str.append("    ").append(stackTrace[i].toString()).append("\n");
+            }
+
+            str.append(last.threadName).append(" stack trace:\n");
+            int lastStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, last.stackTrace.length);
+            for (int i = realStackStartIndex; i < lastStackTraceIndexEnd; i++) {
+                str.append("    ").append(last.stackTrace[i].toString()).append("\n");
+            }
+
+            logWarn(str.toString());
+        }
     }
 
-    public static void reportWriteToMemory(Object accessedObject, String accessedObjectName, String position) {
-        synchronized (conf) {
-            if (alreadyReported.contains(position)) return;
+    public static synchronized void reportWriteToMemory(Object accessedObject, String accessedObjectField, String position) {
+        if (alreadyReported.contains(position)) return;
 
-            Thread thread = Thread.currentThread();
-            if (thread.getName().equals("main")) return;
+        Thread thread = Thread.currentThread();
+        if (thread.getName().equals("main")) return;
 
-            Object obj = accessedObject == null ? accessedObjectName : accessedObject;
-            int identityKey = (System.identityHashCode(obj) + accessedObjectName).hashCode();
-            LastAccess last = writeLocations.get(identityKey);
+        Object obj = accessedObject == null ? accessedObjectField : accessedObject;
+        AccessKey key = new AccessKey(accessedObjectField, obj);
+        LastAccess last = writeLocations.get(key);
+        long threadId = thread.getId();
 
-            // Hacky and ugly but fairly effective garbage collector.
-            // Using WeakHashMap would be preferable but it doesn't allow to add partially constructed objects.
-            // I didn't found a quick way to discover if we are in the constructor call chain.
-            if (last != null) {
-                Object lastThs = last.ths.get();
-                if (lastThs == null) {
-                    writeLocations.entrySet().removeIf(entry -> entry.getValue().ths.get() == null);
-                    last = null;
-                } else if (last.threadId == thread.getId() && last.identityKey() == identityKey) {
-                    last.addLocks(locks.get());
-                    return;
-                }
-            }
+        // Hacky and ugly but fairly effective garbage collector.
+        // Using WeakHashMap would be preferable but it doesn't allow to add partially constructed objects.
+        // I didn't found a quick way to discover if we are in the constructor call chain.
+        if (AccessKey.needsCleanup) {
+            AccessKey.needsCleanup = false;
+            writeLocations.entrySet().removeIf(entry -> entry.getKey().getObj() == null);
+        }
 
-            LastAccess current = new LastAccess(thread.getId(), accessedObjectName, new WeakReference<>(obj), thread.getName(), locks.get());
-            writeLocations.put(identityKey, current);
+        if (last != null) {
+            Set<Integer> currentLocks = locks.get();
 
-            if (last != null &&
-                    last.threadId != current.threadId &&
-                    last.identityKey() == identityKey &&
-                    disjoint(current.locks, last.locks)) {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                current.stackTrace = Arrays.copyOf(stackTrace, stackTrace.length);
+            if (last.threadId != threadId && !last.safeAccessed(currentLocks))
+                potentialValioation(last, position, accessedObjectField);
 
-                // Optimization. We want stack traces from both workers but we do not want to get it until we know
-                // we have violation because it's really slow. So we need 3 hits to reliably get all information.
-                if (last.stackTrace == null) return;
-
-                if (!isInStackTrace(current.stackTrace)) return;
-
-                if (alreadyReported.add(position)) {
-                    StringBuilder str = new StringBuilder(String.format(
-                            "Object %s accessed from multiple threads in %s:\n",
-                            accessedObjectName,
-                            position));
-
-                    str.append(current.threadName).append(" stack trace:\n");
-                    int currentStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, current.stackTrace.length);
-                    for (int i = realStackStartIndex; i < currentStackTraceIndexEnd; i++) {
-                        str.append("    ").append(current.stackTrace[i].toString()).append("\n");
-                    }
-
-                    str.append(last.threadName).append(" stack trace:\n");
-                    int lastStackTraceIndexEnd = Math.min(realStackStartIndex + STACK_TRACE_LENGTH, last.stackTrace.length);
-                    for (int i = realStackStartIndex; i < lastStackTraceIndexEnd; i++) {
-                        str.append("    ").append(last.stackTrace[i].toString()).append("\n");
-                    }
-
-                    logWarn(str.toString());
-                }
-            }
+            last.addLocks(currentLocks);
+        } else {
+            LastAccess current = new LastAccess(thread.getId(), thread.getName(), locks.get());
+            writeLocations.put(key, current);
         }
     }
 
@@ -241,6 +314,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
 
         } catch (BadBytecode | NotFoundException e) {
+            System.out.println("[ERROR] Unable to modify method: " + editableMethod.getLongName() + " from " + dottedClassName);
             e.printStackTrace();
         }
     }
