@@ -16,6 +16,17 @@ class LastAccess {
     Set<Integer> locks;
     long threadId;
 
+    public boolean equals(Object obj) {
+        return obj instanceof  LastAccess &&
+                threadId == ((LastAccess) obj).threadId &&
+                locks.equals(((LastAccess) obj).locks) &&
+                ths.get() == ((LastAccess) obj).ths.get();
+    }
+
+    public int hashCode() {
+        return (int) (System.identityHashCode(ths.get()) + 13* threadId);
+    }
+
     LastAccess(long threadId, Object ths, Set<Integer> locks) {
         this.ths = new WeakReference<>(ths);
         this.threadId = threadId;
@@ -66,10 +77,6 @@ public class AccessMonitorRewriter extends MethodRewriter {
         warnings.add(warn);
     }
 
-    private static String hashCode(Object ths, String accessedObjectName) {
-        return System.identityHashCode(ths) + accessedObjectName;
-    }
-
     private static final ThreadLocal<Boolean> isAlreadyProcessing = ThreadLocal.withInitial(() -> false);
 
     public static void reportWriteToMemory(Object ths, String accessedObjectName, String position) {
@@ -84,33 +91,25 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
                 ths = (ths == null) ? accessedObjectName : ths;
 
-                String hashCode = hashCode(ths, accessedObjectName);
-                LastAccess last = writeLocations.get(hashCode);
+                String hashCode = System.identityHashCode(ths) + accessedObjectName;
 
+                LastAccess last = writeLocations.get(hashCode);
                 if (last != null) {
-                    // `ths` is already gone, we need to do GC
                     if (last.ths.get() == null) {
-                        interestingWriteLocations.forEach((key, value) -> value.removeIf(e -> e.ths.get() == null));
-                        interestingWriteLocations.entrySet().removeIf(e -> e.getValue().isEmpty());
-                        writeLocations.entrySet().removeIf(e -> e.getValue().ths.get() == null);
+                        collectGarbage();
                         return;
                     }
 
-                    if (ths == last.ths.get() && locks.get().equals(last.locks)) {
-                        if (thread.getId() != last.threadId) printStackTrace(accessedObjectName, position, thread);
-                        return;
-                    } else {
-                        // If we have conflict on hash or different set of locks we need to move to interesting writes set
+                    boolean sameThis = ths == last.ths.get();
+                    boolean sameLocks = locks.get().equals(last.locks);
+                    boolean locksExists = !last.locks.isEmpty();
+                    boolean sameThread = thread.getId() != last.threadId;
+
+                    if (sameThis && locksExists && sameLocks) return;
+                    if (sameThis && sameThread) printStackTrace(accessedObjectName, position, thread);
+                    if (!sameThis || locksExists) {
+                        // If we have conflict on hash or different set of locks we need to move it to interesting writes set
                         List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
-
-                        // Key trick to optimize speed. We assume that if the same variable is accessed with dozens
-                        // of different locks it probably means there is one or two important ones and rest is accidental
-                        // due to some other synchronizations long the way.
-                        // If that is the case we should check that locks first.
-                        HashSet<Integer> locks = new HashSet<>(AccessMonitorRewriter.locks.get());
-                        if (!lastAccesses.isEmpty()) locks.retainAll(commonLocks.get(hashCode));
-                        commonLocks.put(hashCode, locks);
-
                         lastAccesses.add(last);
                         writeLocations.remove(hashCode);
                     }
@@ -129,10 +128,28 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 LastAccess current = new LastAccess(thread.getId(), ths, locks.get());
                 if (lastAccesses != null) interestingWriteLocations.get(hashCode).add(current);
                 else writeLocations.put(hashCode, current);
-            }
+
+                updateCommonLocks(hashCode);
+        }
         } finally {
             isAlreadyProcessing.set(false);
         }
+    }
+
+    private static void collectGarbage() {
+        interestingWriteLocations.forEach((key, value) -> value.removeIf(e -> e.ths.get() == null));
+        interestingWriteLocations.entrySet().removeIf(e -> e.getValue().isEmpty());
+        writeLocations.entrySet().removeIf(e -> e.getValue().ths.get() == null);
+    }
+
+    // Key trick to optimize speed. We assume that if the same variable is accessed with dozens
+    // of different locks it probably means there is one or two important ones and rest is accidental
+    // due to some other synchronizations long the way.
+    // If that is the case we should check that locks first.
+    private static void updateCommonLocks(String hashCode) {
+        HashSet<Integer> locks = new HashSet<>(AccessMonitorRewriter.locks.get());
+        if (commonLocks.containsKey(hashCode)) locks.retainAll(commonLocks.get(hashCode));
+        commonLocks.put(hashCode, locks);
     }
 
     private static void printStackTrace(String accessedObjectName, String position, Thread thread) {
