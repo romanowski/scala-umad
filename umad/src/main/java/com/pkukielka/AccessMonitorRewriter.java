@@ -40,9 +40,9 @@ public class AccessMonitorRewriter extends MethodRewriter {
     private static final Pattern ifCalledFromPattern =
             Pattern.compile(conf.getMonitorConfig().getString("ifCalledFrom"));
 
-    private static final HashMap<String, List<LastAccess>> interestingWriteLocations = new HashMap<>();
-    private static final HashMap<String, LastAccess> writeLocations = new HashMap<>();
-    private static final HashMap<String, HashSet<Integer>> commonLocks = new HashMap<>();
+    private static final HashMap<Long, List<LastAccess>> interestingWriteLocations = new HashMap<>();
+    private static final HashMap<Long, LastAccess> writeLocations = new HashMap<>();
+    private static final HashMap<Long, HashSet<Integer>> commonLocks = new HashMap<>();
 
     private static final ThreadLocal<HashSet<Integer>> locks = ThreadLocal.withInitial(HashSet::new);
 
@@ -91,7 +91,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
                 ths = (ths == null) ? accessedObjectName : ths;
 
-                String hashCode = System.identityHashCode(ths) + accessedObjectName;
+                Long hashCode = (((long)System.identityHashCode(ths)) << 32) + accessedObjectName.hashCode();
 
                 LastAccess last = writeLocations.get(hashCode);
 
@@ -150,7 +150,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
     // of different locks it probably means there is one or two important ones and rest is accidental
     // due to some other synchronizations long the way.
     // If that is the case we should check that locks first.
-    private static void updateCommonLocks(String hashCode, Set<Integer> currentLocks) {
+    private static void updateCommonLocks(Long hashCode, Set<Integer> currentLocks) {
         HashSet<Integer> locks = new HashSet<>(currentLocks);
         if (commonLocks.containsKey(hashCode)) locks.retainAll(commonLocks.get(hashCode));
         commonLocks.put(hashCode, locks);
