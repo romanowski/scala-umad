@@ -17,14 +17,14 @@ class LastAccess {
     long threadId;
 
     public boolean equals(Object obj) {
-        return obj instanceof  LastAccess &&
+        return obj instanceof LastAccess &&
                 threadId == ((LastAccess) obj).threadId &&
                 locks.equals(((LastAccess) obj).locks) &&
                 ths.get() == ((LastAccess) obj).ths.get();
     }
 
     public int hashCode() {
-        return (int) (System.identityHashCode(ths.get()) + 13* threadId);
+        return (int) (System.identityHashCode(ths.get()) + 13 * threadId);
     }
 
     LastAccess(long threadId, Object ths, Set<Integer> locks) {
@@ -102,17 +102,15 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
                     boolean sameThis = ths == last.ths.get();
                     boolean sameLocks = locks.get().equals(last.locks);
+                    boolean sameThread = thread.getId() == last.threadId;
                     boolean locksExists = !last.locks.isEmpty();
-                    boolean sameThread = thread.getId() != last.threadId;
 
-                    if (sameThis && locksExists && sameLocks) return;
-                    if (sameThis && sameThread) printStackTrace(accessedObjectName, position, thread);
-                    if (!sameThis || locksExists) {
-                        // If we have conflict on hash or different set of locks we need to move it to interesting writes set
-                        List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
-                        lastAccesses.add(last);
-                        writeLocations.remove(hashCode);
-                    }
+                    if (sameThread ||(sameThis && locksExists && sameLocks)) return;
+
+                    // If we have conflict on hash or different set of locks we need to move it to interesting writes set
+                    List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
+                    lastAccesses.add(last);
+                    writeLocations.remove(hashCode);
                 }
 
                 List<LastAccess> lastAccesses = interestingWriteLocations.get(hashCode);
@@ -130,7 +128,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 else writeLocations.put(hashCode, current);
 
                 updateCommonLocks(hashCode);
-        }
+            }
         } finally {
             isAlreadyProcessing.set(false);
         }
