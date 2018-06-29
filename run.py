@@ -51,8 +51,7 @@ if options.debugPort:
 
 classpathSeparator = ";" if os.name == 'nt' else ":"
 
-# assert
-subprocess.call(["mvn", "package"], cwd="umad") == 0
+assert subprocess.call(["mvn", "package"], cwd="umad") == 0
 
 outputBase = tempfile.mkdtemp()
 scalaOutput = os.path.join(outputBase, "scala")

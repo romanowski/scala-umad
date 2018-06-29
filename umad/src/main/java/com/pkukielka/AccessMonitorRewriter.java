@@ -94,23 +94,28 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 String hashCode = System.identityHashCode(ths) + accessedObjectName;
 
                 LastAccess last = writeLocations.get(hashCode);
-                if (last != null) {
-                    if (last.ths.get() == null) {
-                        collectGarbage();
-                        return;
-                    }
 
+                if (last != null && last.ths.get() == null) {
+                    collectGarbage();
+                    last = null;
+                }
+
+                if (last != null) {
                     boolean sameThis = ths == last.ths.get();
                     boolean sameLocks = locks.get().equals(last.locks);
                     boolean sameThread = thread.getId() == last.threadId;
                     boolean locksExists = !last.locks.isEmpty();
 
-                    if (sameThread ||(sameThis && locksExists && sameLocks)) return;
+                    if (sameThis && locksExists && sameLocks) return;
+                    if (sameThis && !sameThread && (!locksExists || !sameLocks)) printStackTrace(accessedObjectName, position, thread);
+                    if (!sameThis || (locksExists && !sameLocks)) {
+                        // If we have conflict on hash or different set of locks we need to move it to interesting writes set
+                        List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
+                        lastAccesses.add(last);
+                        writeLocations.remove(hashCode);
+                        updateCommonLocks(hashCode, last.locks);
 
-                    // If we have conflict on hash or different set of locks we need to move it to interesting writes set
-                    List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
-                    lastAccesses.add(last);
-                    writeLocations.remove(hashCode);
+                    }
                 }
 
                 List<LastAccess> lastAccesses = interestingWriteLocations.get(hashCode);
@@ -124,10 +129,11 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 }
 
                 LastAccess current = new LastAccess(thread.getId(), ths, locks.get());
-                if (lastAccesses != null) interestingWriteLocations.get(hashCode).add(current);
+                if (lastAccesses != null) {
+                    interestingWriteLocations.get(hashCode).add(current);
+                    updateCommonLocks(hashCode, AccessMonitorRewriter.locks.get());
+                }
                 else writeLocations.put(hashCode, current);
-
-                updateCommonLocks(hashCode);
             }
         } finally {
             isAlreadyProcessing.set(false);
@@ -144,8 +150,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
     // of different locks it probably means there is one or two important ones and rest is accidental
     // due to some other synchronizations long the way.
     // If that is the case we should check that locks first.
-    private static void updateCommonLocks(String hashCode) {
-        HashSet<Integer> locks = new HashSet<>(AccessMonitorRewriter.locks.get());
+    private static void updateCommonLocks(String hashCode, Set<Integer> currentLocks) {
+        HashSet<Integer> locks = new HashSet<>(currentLocks);
         if (commonLocks.containsKey(hashCode)) locks.retainAll(commonLocks.get(hashCode));
         commonLocks.put(hashCode, locks);
     }
