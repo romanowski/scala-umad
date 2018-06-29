@@ -1,10 +1,7 @@
 package com.pkukielka;
 
 import com.typesafe.config.Config;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.*;
 
 import java.lang.ref.WeakReference;
@@ -15,6 +12,7 @@ class LastAccess {
     WeakReference<Object> ths;
     Set<Integer> locks;
     long threadId;
+    String threadName = Thread.currentThread().getName();
 
     public boolean equals(Object obj) {
         return obj instanceof LastAccess &&
@@ -27,7 +25,7 @@ class LastAccess {
         return (int) (System.identityHashCode(ths.get()) + 13 * threadId);
     }
 
-    LastAccess(long threadId, Object ths, Set<Integer> locks) {
+    LastAccess(long threadId, Object ths, Collection<Integer> locks) {
         this.ths = new WeakReference<>(ths);
         this.threadId = threadId;
         this.locks = new HashSet<>(locks);
@@ -40,11 +38,13 @@ public class AccessMonitorRewriter extends MethodRewriter {
     private static final Pattern ifCalledFromPattern =
             Pattern.compile(conf.getMonitorConfig().getString("ifCalledFrom"));
 
+    private static final String resetMethodFqn =conf.getMonitorConfig().getString("resetMethodFqn");
+
     private static final HashMap<Long, List<LastAccess>> interestingWriteLocations = new HashMap<>();
     private static final HashMap<Long, LastAccess> writeLocations = new HashMap<>();
     private static final HashMap<Long, HashSet<Integer>> commonLocks = new HashMap<>();
 
-    private static final ThreadLocal<HashSet<Integer>> locks = ThreadLocal.withInitial(HashSet::new);
+    private static final ThreadLocal<Collection<Integer>> locks = ThreadLocal.withInitial(LinkedList::new);
 
     private static final int STACK_TRACE_LENGTH = 10;
 
@@ -79,7 +79,10 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
     private static final ThreadLocal<Boolean> isAlreadyProcessing = ThreadLocal.withInitial(() -> false);
 
-    public static void reportWriteToMemory(Object ths, String accessedObjectName, String position) {
+    public static void reportWriteToMemory(Object ths,
+                                           String accessedObjectName,
+                                           String position,
+                                           boolean synchronizedMethod) {
         if (isAlreadyProcessing.get()) return;
         try {
             isAlreadyProcessing.set(true);
@@ -91,7 +94,8 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
                 ths = (ths == null) ? accessedObjectName : ths;
 
-                Long hashCode = (((long)System.identityHashCode(ths)) << 32) + accessedObjectName.hashCode();
+                int thisHashCode = System.identityHashCode(ths);
+                Long hashCode = (((long) thisHashCode) << 32) + accessedObjectName.hashCode();
 
                 LastAccess last = writeLocations.get(hashCode);
 
@@ -100,40 +104,47 @@ public class AccessMonitorRewriter extends MethodRewriter {
                     last = null;
                 }
 
-                if (last != null) {
-                    boolean sameThis = ths == last.ths.get();
-                    boolean sameLocks = locks.get().equals(last.locks);
-                    boolean sameThread = thread.getId() == last.threadId;
-                    boolean locksExists = !last.locks.isEmpty();
+                Collection<Integer> currentLocks = locks.get();
+                if (synchronizedMethod) currentLocks.add(thisHashCode);
 
-                    if (sameThis && locksExists && sameLocks) return;
-                    if (sameThis && !sameThread && (!locksExists || !sameLocks)) printStackTrace(accessedObjectName, position, thread);
-                    if (!sameThis || (locksExists && !sameLocks)) {
-                        // If we have conflict on hash or different set of locks we need to move it to interesting writes set
-                        List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
-                        lastAccesses.add(last);
-                        writeLocations.remove(hashCode);
-                        updateCommonLocks(hashCode, last.locks);
+                try {
+                    if (last != null) {
+                        boolean sameThis = ths == last.ths.get();
+                        boolean sameLocks = last.locks.containsAll(currentLocks);
+                        boolean sameThread = thread.getId() == last.threadId;
+                        boolean locksExists = !last.locks.isEmpty();
 
-                    }
-                }
-
-                List<LastAccess> lastAccesses = interestingWriteLocations.get(hashCode);
-                if (lastAccesses != null && Collections.disjoint(locks.get(), commonLocks.get(hashCode))) {
-                    for (LastAccess lastAccess : lastAccesses) {
-                        if (ths == lastAccess.ths.get() &&
-                                thread.getId() != lastAccess.threadId &&
-                                Collections.disjoint(locks.get(), lastAccess.locks))
+                        if (sameThis && locksExists && sameLocks) return;
+                        if (sameThis && !sameThread && (!locksExists || Collections.disjoint(last.locks, currentLocks)))
                             printStackTrace(accessedObjectName, position, thread);
-                    }
-                }
+                        if (!sameThis || (locksExists && !sameLocks)) {
+                            // If we have conflict on hash or different set of locks we need to move it to interesting writes set
+                            List<LastAccess> lastAccesses = interestingWriteLocations.computeIfAbsent(hashCode, key -> new LinkedList<>());
+                            lastAccesses.add(last);
+                            writeLocations.remove(hashCode);
+                            updateCommonLocks(hashCode, last.locks);
 
-                LastAccess current = new LastAccess(thread.getId(), ths, locks.get());
-                if (lastAccesses != null) {
-                    interestingWriteLocations.get(hashCode).add(current);
-                    updateCommonLocks(hashCode, AccessMonitorRewriter.locks.get());
+                        }
+                    }
+
+                    List<LastAccess> lastAccesses = interestingWriteLocations.get(hashCode);
+                    if (lastAccesses != null && Collections.disjoint(currentLocks, commonLocks.get(hashCode))) {
+                        for (LastAccess lastAccess : lastAccesses) {
+                            if (ths == lastAccess.ths.get() &&
+                                    thread.getId() != lastAccess.threadId &&
+                                    Collections.disjoint(currentLocks, lastAccess.locks))
+                                printStackTrace(accessedObjectName, position, thread);
+                        }
+                    }
+
+                    LastAccess current = new LastAccess(thread.getId(), ths, currentLocks);
+                    if (lastAccesses != null) {
+                        interestingWriteLocations.get(hashCode).add(current);
+                        updateCommonLocks(hashCode, currentLocks);
+                    } else writeLocations.put(hashCode, current);
+                } finally {
+                    if (synchronizedMethod) currentLocks.remove((Integer)thisHashCode);
                 }
-                else writeLocations.put(hashCode, current);
             }
         } finally {
             isAlreadyProcessing.set(false);
@@ -150,7 +161,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
     // of different locks it probably means there is one or two important ones and rest is accidental
     // due to some other synchronizations long the way.
     // If that is the case we should check that locks first.
-    private static void updateCommonLocks(Long hashCode, Set<Integer> currentLocks) {
+    private static void updateCommonLocks(Long hashCode, Collection<Integer> currentLocks) {
         HashSet<Integer> locks = new HashSet<>(currentLocks);
         if (commonLocks.containsKey(hashCode)) locks.retainAll(commonLocks.get(hashCode));
         commonLocks.put(hashCode, locks);
@@ -181,7 +192,7 @@ public class AccessMonitorRewriter extends MethodRewriter {
     }
 
     public static void removeLockFromCurrentThread(Object o) {
-        locks.get().remove(System.identityHashCode(o));
+        locks.get().remove((Integer)System.identityHashCode(o));
     }
 
     private boolean hasWriteInstructions(CodeIterator codeIterator) throws BadBytecode {
@@ -261,9 +272,10 @@ public class AccessMonitorRewriter extends MethodRewriter {
 
                 codeAttr.computeMaxStack();
             }
+            if (editableMethod.getLongName().equals(resetMethodFqn))
+                editableMethod.insertAfter("com.pkukielka.AccessMonitorRewriter.clearState();");
 
-
-        } catch (BadBytecode | NotFoundException e) {
+        } catch (BadBytecode | NotFoundException | CannotCompileException e) {
             e.printStackTrace();
         }
     }
@@ -294,12 +306,6 @@ public class AccessMonitorRewriter extends MethodRewriter {
         return classPool.get(Descriptor.toClassName(tpe));
     }
 
-    private String getFieldFqn(ConstPool constPool, int fieldIndex) {
-        String name = constPool.getFieldrefName(fieldIndex);
-        String className = constPool.getFieldrefClassName(fieldIndex);
-        return className + "." + name;
-    }
-
     private void insertCallToSingleArgFunction(String funcName, ConstPool constPool,
                                                CodeIterator codeIterator, int codeIndex) throws BadBytecode {
         Bytecode code = new Bytecode(constPool);
@@ -316,12 +322,24 @@ public class AccessMonitorRewriter extends MethodRewriter {
                 info, codeAttr, codeIterator, codeIndex);
     }
 
+    private static final int IgnoredFlags = Modifier.TRANSIENT | Modifier.VOLATILE;
+
     private void insertCallToReporterForField(int prepareThisOpcode, CtClass currentClazz, ConstPool constPool,
                                               MethodInfo info, CodeAttribute codeAttr, CodeIterator codeIterator,
                                               int codeIndex) throws BadBytecode, NotFoundException {
         int fieldIndex = codeIterator.byteAt(codeIndex + 2) + (codeIterator.byteAt(codeIndex + 1) << 8);
+
+        String fieldName = constPool.getFieldrefName(fieldIndex);
+
         CtClass elemClass = getFieldCtClass(currentClazz, constPool, fieldIndex);
-        String fqn = getFieldFqn(constPool, fieldIndex);
+        String className = constPool.getFieldrefClassName(fieldIndex);
+
+        CtClass fieldClass = currentClazz.getClassPool().get(className);
+        CtField field = fieldClass.getField(fieldName);
+        if ((field.getModifiers() & IgnoredFlags) != 0) return;
+
+        String fqn = className + "." + fieldName;
+
         insertCallToReporter(false, prepareThisOpcode, fqn, elemClass, currentClazz, constPool,
                 info, codeAttr, codeIterator, codeIndex);
     }
@@ -338,10 +356,11 @@ public class AccessMonitorRewriter extends MethodRewriter {
         code.addOpcode(prepareThisOpcode);
         code.addLdc(fqn);
         code.addLdc(currentClazz.getClassFile().getSourceFile() + ":" + info.getLineNumber(codeIndex));
+        code.addIconst(info.getAccessFlags() & AccessFlag.SYNCHRONIZED);
         code.addInvokestatic(
                 "com.pkukielka.AccessMonitorRewriter",
                 "reportWriteToMemory",
-                "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V");
+                "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Z)V");
 
         if (isArray) code.addLoad(maxLocals - 2, CtClass.intType);
         code.addLoad(maxLocals - 4, elemClass);

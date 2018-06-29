@@ -1,0 +1,1794 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.pkukielka.umad:umad:jar:1.0-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for net.alchim31.maven:scala-maven-plugin is missing. @ line 153, column 15
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building umad 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.0:enforce (enforce-maven) @ umad ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ umad ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- scala-maven-plugin:3.3.2:add-source (scala-compile-first) @ umad ---
+[INFO] Add Source directory: /home/kromanowski/workspace/scala-umad/umad/src/main/scala
+[INFO] Add Test Source directory: /home/kromanowski/workspace/scala-umad/umad/src/test/scala
+[INFO] 
+[INFO] --- scala-maven-plugin:3.3.2:compile (scala-compile-first) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-assembly-plugin:2.6:single (assemble-all) @ umad ---
+[INFO] Building jar: /home/kromanowski/workspace/scala-umad/umad/target/umad-1.0-SNAPSHOT.jar
+[WARNING] Configuration options: 'appendAssemblyId' is set to false, and 'classifier' is missing.
+Instead of attaching the assembly file: /home/kromanowski/workspace/scala-umad/umad/target/umad-1.0-SNAPSHOT.jar, it will become the file for main project artifact.
+NOTE: If multiple descriptors or descriptor-formats are provided for this project, the value of this file will be non-deterministic!
+[WARNING] Replacing pre-existing project main-artifact file: /home/kromanowski/workspace/scala-umad/umad/target/classes
+with assembly file: /home/kromanowski/workspace/scala-umad/umad/target/umad-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ umad ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- scala-maven-plugin:3.3.2:testCompile (scala-test-compile) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:testCompile (default-testCompile) @ umad ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.8:test (default-test) @ umad ---
+[INFO] Surefire report directory: /home/kromanowski/workspace/scala-umad/umad/target/surefire-reports
+Starting UmadAgent
+[INFO] Introduce chaos with sleepThreshold=100, methodPercent=10  and sleepTime=100
+[Info] TracingTransformer active
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.pkukielka.test.AgentTest
+Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.16 sec
+
+Results :
+
+Tests run: 23, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.1:jar (default-jar) @ umad ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.650 s
+[INFO] Finished at: 2018-06-29T21:22:04+02:00
+[INFO] Final Memory: 25M/621M
+[INFO] ------------------------------------------------------------------------
+Starting UmadAgent
+[Info] TracingTransformer active
+[WARN] Object scala.reflect.internal.SymbolTable.ph accessed from multiple threads in SymbolTable.scala:240:
+worker-typer-2 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:240)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1539)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Symbols$Symbol.initialize(Symbols.scala:1689)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5302)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+
+[WARN] Object scala.reflect.internal.SymbolTable.per accessed from multiple threads in SymbolTable.scala:241:
+worker-typer-2 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:241)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1539)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Symbols$Symbol.initialize(Symbols.scala:1689)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5302)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+
+[WARN] Object scala.reflect.internal.Trees$TypeTree.orig accessed from multiple threads in Trees.scala:922:
+worker-typer-2 stack trace:
+    scala.reflect.internal.Trees$TypeTree.orig_$eq(Trees.scala:922)
+    scala.reflect.internal.Trees$TypeTree.setOriginal(Trees.scala:939)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1914)
+    scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1798)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5608)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.reflect.internal.Trees$Tree.rawatt accessed from multiple threads in Trees.scala:38:
+worker-typer-2 stack trace:
+    scala.reflect.internal.Trees$Tree.rawatt_$eq(Trees.scala:38)
+    scala.reflect.internal.StdAttachments$Attachable.pos_$eq(StdAttachments.scala:26)
+    scala.reflect.internal.StdAttachments$Attachable.pos_$eq$(StdAttachments.scala:26)
+    scala.reflect.internal.Trees$Tree.pos_$eq(Trees.scala:38)
+    scala.reflect.internal.StdAttachments$Attachable.setPos(StdAttachments.scala:27)
+    scala.reflect.internal.StdAttachments$Attachable.setPos$(StdAttachments.scala:27)
+    scala.reflect.internal.Trees$Tree.setPos(Trees.scala:38)
+    scala.reflect.internal.Trees$TypeTree.setOriginal(Trees.scala:939)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1914)
+    scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1798)
+
+[WARN] Object scala.reflect.internal.Trees$Tree.rawtpe accessed from multiple threads in Trees.scala:51:
+worker-typer-2 stack trace:
+    scala.reflect.internal.Trees$Tree.setType(Trees.scala:51)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1914)
+    scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1798)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5608)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+    scala.tools.nsc.typechecker.Typers$Typer.typedByValueExpr(Typers.scala:5769)
+
+[WARN] Object scala.reflect.internal.Symbols$TypeSymbol.tpePeriod accessed from multiple threads in Symbols.scala:3086:
+worker-typer-2 stack trace:
+    scala.reflect.internal.Symbols$TypeSymbol.tpePeriod_$eq(Symbols.scala:3086)
+    scala.reflect.internal.Symbols$TypeSymbol.maybeUpdateTypeCache(Symbols.scala:3153)
+    scala.reflect.internal.Symbols$TypeSymbol.$anonfun$tpe_$times$1(Symbols.scala:3130)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$TypeSymbol.tpe_$times(Symbols.scala:3129)
+    scala.reflect.internal.Symbols$Symbol.typeOfThis(Symbols.scala:2052)
+    scala.reflect.internal.Types$TypeRef.typeOfThis(Types.scala:2375)
+    scala.tools.nsc.typechecker.Typers$Typer.validateParentClass$1(Typers.scala:1742)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$validateParentClasses$8(Typers.scala:1762)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod accessed from multiple threads in Types.scala:2221:
+worker-typer-2 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod_$eq(Types.scala:2221)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2561)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.Types$Type.baseTypeIndex(Types.scala:925)
+    scala.reflect.internal.Types.isNew$1(Types.scala:1485)
+    scala.reflect.internal.Types.addMixinBaseClasses$1(Types.scala:1494)
+    scala.reflect.internal.Types.computeBaseClasses(Types.scala:1496)
+    scala.reflect.internal.Types.computeBaseClasses$(Types.scala:1473)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:247:
+worker-typer-2 stack trace:
+    scala.collection.mutable.HashTable.clearTable(HashTable.scala:247)
+    scala.collection.mutable.HashMap.clear(HashMap.scala:56)
+    scala.reflect.internal.tpe.GlbLubs.lub(GlbLubs.scala:254)
+    scala.reflect.internal.tpe.GlbLubs.lub$(GlbLubs.scala:233)
+    scala.reflect.internal.SymbolTable.lub(SymbolTable.scala:19)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMatch(Typers.scala:2541)
+    scala.tools.nsc.typechecker.Typers$Typer.typedVirtualizedMatch$1(Typers.scala:4510)
+    scala.tools.nsc.typechecker.Typers$Typer.typedOutsidePatternMode$1(Typers.scala:5631)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5662)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+
+[WARN] Object scala.collection.mutable.HashTable.tableSize accessed from multiple threads in HashTable.scala:53:
+worker-typer-2 stack trace:
+    scala.collection.mutable.HashTable.tableSize_$eq(HashTable.scala:53)
+    scala.collection.mutable.HashTable.clearTable(HashTable.scala:248)
+    scala.collection.mutable.HashMap.clear(HashMap.scala:56)
+    scala.reflect.internal.tpe.GlbLubs.lub(GlbLubs.scala:254)
+    scala.reflect.internal.tpe.GlbLubs.lub$(GlbLubs.scala:233)
+    scala.reflect.internal.SymbolTable.lub(SymbolTable.scala:19)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMatch(Typers.scala:2541)
+    scala.tools.nsc.typechecker.Typers$Typer.typedVirtualizedMatch$1(Typers.scala:4510)
+    scala.tools.nsc.typechecker.Typers$Typer.typedOutsidePatternMode$1(Typers.scala:5631)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5662)
+
+[WARN] Object  accessed from multiple threads in FlatHashTable.scala:147:
+worker-typer-2 stack trace:
+    scala.collection.mutable.FlatHashTable.addEntry(FlatHashTable.scala:147)
+    scala.collection.mutable.FlatHashTable.addElem(FlatHashTable.scala:130)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:37)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:21)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+    scala.collection.mutable.Growable.addAll$(Growable.scala:47)
+    scala.collection.mutable.AbstractSet.addAll(Set.scala:122)
+    scala.collection.mutable.Growable.$plus$plus$eq(Growable.scala:56)
+    scala.collection.mutable.Growable.$plus$plus$eq$(Growable.scala:56)
+    scala.collection.mutable.AbstractSet.$plus$plus$eq(Set.scala:122)
+
+[WARN] Object scala.collection.mutable.FlatHashTable.tableSize accessed from multiple threads in FlatHashTable.scala:33:
+worker-typer-2 stack trace:
+    scala.collection.mutable.FlatHashTable.tableSize_$eq(FlatHashTable.scala:33)
+    scala.collection.mutable.FlatHashTable.addEntry(FlatHashTable.scala:148)
+    scala.collection.mutable.FlatHashTable.addElem(FlatHashTable.scala:130)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:37)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:21)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+    scala.collection.mutable.Growable.addAll$(Growable.scala:47)
+    scala.collection.mutable.AbstractSet.addAll(Set.scala:122)
+    scala.collection.mutable.Growable.$plus$plus$eq(Growable.scala:56)
+    scala.collection.mutable.Growable.$plus$plus$eq$(Growable.scala:56)
+
+[WARN] Object scala.tools.nsc.typechecker.Infer$instantiate$.excludedVars accessed from multiple threads in Infer.scala:96:
+worker-typer-2 stack trace:
+    scala.tools.nsc.typechecker.Infer$instantiate$.excludedVars_$eq(Infer.scala:96)
+    scala.tools.nsc.typechecker.Infer$instantiate$.applyTypeVar(Infer.scala:101)
+    scala.tools.nsc.typechecker.Infer$instantiate$.apply(Infer.scala:107)
+    scala.tools.nsc.typechecker.Infer$instantiate$.apply(Infer.scala:95)
+    scala.collection.immutable.List.map(List.scala:211)
+    scala.tools.nsc.typechecker.Infer.solvedTypes(Infer.scala:145)
+    scala.tools.nsc.typechecker.Infer.solvedTypes$(Infer.scala:136)
+    scala.tools.nsc.Global$$anon$2.solvedTypes(Global.scala:539)
+    scala.tools.nsc.typechecker.Infer$Inferencer.methTypeArgs(Infer.scala:555)
+    scala.tools.nsc.typechecker.Infer$Inferencer.inferMethodInstance(Infer.scala:1001)
+
+[WARN] Object scala.reflect.internal.tpe.TypeConstraints$UndoLog.scala$reflect$internal$tpe$TypeConstraints$UndoLog$$log accessed from multiple threads in TypeConstraints.scala:55:
+worker-typer-2 stack trace:
+    scala.reflect.internal.tpe.TypeConstraints$UndoLog.clear(TypeConstraints.scala:55)
+    scala.tools.nsc.typechecker.Analyzer$typerFactory$$anon$3.afterUnit(Analyzer.scala:92)
+    scala.tools.nsc.Global$GlobalPhase$$anonfun$1.$anonfun$applyOrElse$2(Global.scala:432)
+    scala.reflect.internal.util.Parallel$.asWorkerThread(Parallel.scala:91)
+    scala.tools.nsc.Global$GlobalPhase$$anonfun$1.$anonfun$applyOrElse$1(Global.scala:430)
+    scala.concurrent.Future$.$anonfun$apply$1(Future.scala:608)
+    scala.util.Success.$anonfun$map$1(Try.scala:250)
+    scala.util.Try$.apply(Try.scala:208)
+    scala.util.Success.map(Try.scala:250)
+    scala.concurrent.Future.$anonfun$map$1(Future.scala:244)
+
+[WARN] Object  accessed from multiple threads in FlatHashTable.scala:183:
+worker-typer-3 stack trace:
+    scala.collection.mutable.FlatHashTable.removeElem(FlatHashTable.scala:183)
+    scala.collection.mutable.HashSet.subtractOne(HashSet.scala:41)
+    scala.collection.mutable.HashSet.subtractOne(HashSet.scala:21)
+    scala.collection.mutable.Shrinkable.loop$1(Shrinkable.scala:48)
+    scala.collection.mutable.Shrinkable.subtractAll(Shrinkable.scala:53)
+    scala.collection.mutable.Shrinkable.subtractAll$(Shrinkable.scala:45)
+    scala.collection.mutable.AbstractSet.subtractAll(Set.scala:122)
+    scala.collection.mutable.Shrinkable.$minus$minus$eq(Shrinkable.scala:60)
+    scala.collection.mutable.Shrinkable.$minus$minus$eq$(Shrinkable.scala:60)
+    scala.collection.mutable.AbstractSet.$minus$minus$eq(Set.scala:122)
+
+[WARN] Object scala.reflect.internal.Types$AliasNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2524:
+worker-typer-4 stack trace:
+    scala.reflect.internal.Types$AliasNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2524)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AliasNoArgsTypeRef.relativeInfo(Types.scala:2524)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.Types.elementExtract(Types.scala:4010)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:151:
+worker-typer-7 stack trace:
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:151)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:51)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:23)
+    scala.collection.mutable.Map$WithDefault.addOne(Map.scala:192)
+    scala.collection.mutable.Map$WithDefault.addOne(Map.scala:175)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.collection.mutable.MapOps.update(Map.scala:85)
+
+[WARN] Object scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembersCacheValue accessed from multiple threads in Symbols.scala:3435:
+worker-typer-7 stack trace:
+    scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembersCacheValue_$eq(Symbols.scala:3435)
+    scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembers(Symbols.scala:3457)
+    scala.reflect.internal.Types$Type.implicitMembers(Types.scala:619)
+    scala.tools.nsc.typechecker.Contexts$Context.collect$1(Contexts.scala:873)
+    scala.tools.nsc.typechecker.Contexts$Context.collectImplicitImports(Contexts.scala:884)
+    scala.tools.nsc.typechecker.Contexts$Context.implicits(Contexts.scala:936)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:907)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:914)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+
+[WARN] Object scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembersCacheKey1 accessed from multiple threads in Symbols.scala:3436:
+worker-typer-7 stack trace:
+    scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembersCacheKey1_$eq(Symbols.scala:3436)
+    scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembers(Symbols.scala:3458)
+    scala.reflect.internal.Types$Type.implicitMembers(Types.scala:619)
+    scala.tools.nsc.typechecker.Contexts$Context.collect$1(Contexts.scala:873)
+    scala.tools.nsc.typechecker.Contexts$Context.collectImplicitImports(Contexts.scala:884)
+    scala.tools.nsc.typechecker.Contexts$Context.implicits(Contexts.scala:936)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:907)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:914)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+
+[WARN] Object scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembersCacheKey2 accessed from multiple threads in Symbols.scala:3437:
+worker-typer-7 stack trace:
+    scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembersCacheKey2_$eq(Symbols.scala:3437)
+    scala.reflect.internal.Symbols$ModuleClassSymbol.implicitMembers(Symbols.scala:3459)
+    scala.reflect.internal.Types$Type.implicitMembers(Types.scala:619)
+    scala.tools.nsc.typechecker.Contexts$Context.collect$1(Contexts.scala:873)
+    scala.tools.nsc.typechecker.Contexts$Context.collectImplicitImports(Contexts.scala:884)
+    scala.tools.nsc.typechecker.Contexts$Context.implicits(Contexts.scala:936)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:907)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:914)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+
+[WARN] Object scala.reflect.internal.Symbols$TypeSymbol.tyconCache accessed from multiple threads in Symbols.scala:3083:
+worker-typer-10 stack trace:
+    scala.reflect.internal.Symbols$TypeSymbol.tyconCache_$eq(Symbols.scala:3083)
+    scala.reflect.internal.Symbols$TypeSymbol.info_$eq(Symbols.scala:3180)
+    scala.reflect.internal.Symbols$Symbol.setInfo(Symbols.scala:1567)
+    scala.tools.nsc.typechecker.Namers$Namer$MonoTypeCompleter.completeImpl(Namers.scala:856)
+    scala.tools.nsc.typechecker.Namers$LockingTypeCompleter.complete(Namers.scala:1951)
+    scala.tools.nsc.typechecker.Namers$LockingTypeCompleter.complete$(Namers.scala:1949)
+    scala.tools.nsc.typechecker.Namers$TypeCompleterBase.complete(Namers.scala:1944)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1540)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+
+[WARN] Object scala.collection.mutable.HashTable.table accessed from multiple threads in HashTable.scala:49:
+worker-typer-13 stack trace:
+    scala.collection.mutable.HashTable.table_$eq(HashTable.scala:49)
+    scala.collection.mutable.HashTable.resize(HashTable.scala:254)
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:155)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.LinkedHashMap.put(LinkedHashMap.scala:96)
+    scala.collection.mutable.LinkedHashMap.addOne(LinkedHashMap.scala:115)
+    scala.collection.mutable.LinkedHashMap.addOne(LinkedHashMap.scala:49)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+
+[WARN] Object scala.collection.mutable.LinkedHashMap$LinkedEntry.next accessed from multiple threads in LinkedHashMap.scala:26:
+worker-typer-13 stack trace:
+    scala.collection.mutable.LinkedHashMap$LinkedEntry.next_$eq(LinkedHashMap.scala:26)
+    scala.collection.mutable.LinkedHashMap$LinkedEntry.next_$eq(LinkedHashMap.scala:26)
+    scala.collection.mutable.HashTable.resize(HashTable.scala:262)
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:155)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.LinkedHashMap.put(LinkedHashMap.scala:96)
+    scala.collection.mutable.LinkedHashMap.addOne(LinkedHashMap.scala:115)
+    scala.collection.mutable.LinkedHashMap.addOne(LinkedHashMap.scala:49)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+
+[WARN] Object scala.collection.mutable.HashTable.threshold accessed from multiple threads in HashTable.scala:59:
+worker-typer-13 stack trace:
+    scala.collection.mutable.HashTable.threshold_$eq(HashTable.scala:59)
+    scala.collection.mutable.HashTable.resize(HashTable.scala:269)
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:155)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.LinkedHashMap.put(LinkedHashMap.scala:96)
+    scala.collection.mutable.LinkedHashMap.addOne(LinkedHashMap.scala:115)
+    scala.collection.mutable.LinkedHashMap.addOne(LinkedHashMap.scala:49)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.parentsPeriod accessed from multiple threads in Types.scala:2219:
+worker-typer-14 stack trace:
+    scala.reflect.internal.Types$TypeRef.parentsPeriod_$eq(Types.scala:2219)
+    scala.reflect.internal.Types.defineParentsOfTypeRef(Types.scala:2549)
+    scala.reflect.internal.Types.defineParentsOfTypeRef$(Types.scala:2546)
+    scala.reflect.internal.SymbolTable.defineParentsOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.parents(Types.scala:2383)
+    scala.reflect.internal.Types$Type.firstParent(Types.scala:418)
+    scala.tools.nsc.typechecker.Typers$Typer.supersuper$1(Typers.scala:1630)
+    scala.tools.nsc.typechecker.Typers$Typer.explode0$1(Typers.scala:1632)
+    scala.tools.nsc.typechecker.Typers$Typer.explode$1(Typers.scala:1637)
+    scala.tools.nsc.typechecker.Typers$Typer.normalizeFirstParent(Typers.scala:1640)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:759:
+worker-typer-14 stack trace:
+    scala.reflect.internal.Symbols$Symbol.setFlag(Symbols.scala:759)
+    scala.reflect.internal.Symbols$Symbol.cookJavaRawInfo(Symbols.scala:1715)
+    scala.tools.nsc.typechecker.Infer$Inferencer.checkAccessible(Infer.scala:271)
+    scala.tools.nsc.typechecker.Typers$Typer.makeAccessible(Typers.scala:568)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typed1$59(Typers.scala:5051)
+    scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:689)
+    scala.tools.nsc.typechecker.Typers$Typer.typedSelect$1(Typers.scala:5051)
+    scala.tools.nsc.typechecker.Typers$Typer.typedSelectOrSuperCall$1(Typers.scala:5108)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5653)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:183:
+worker-typer-14 stack trace:
+    scala.collection.mutable.HashTable.removeEntry(HashTable.scala:183)
+    scala.collection.mutable.HashMap.subtractOne(HashMap.scala:58)
+    scala.collection.mutable.HashMap.subtractOne(HashMap.scala:23)
+    scala.collection.mutable.Map$WithDefault.subtractOne(Map.scala:190)
+    scala.collection.mutable.Map$WithDefault.subtractOne(Map.scala:175)
+    scala.collection.mutable.Shrinkable.loop$1(Shrinkable.scala:48)
+    scala.collection.mutable.Shrinkable.subtractAll(Shrinkable.scala:53)
+    scala.collection.mutable.Shrinkable.subtractAll$(Shrinkable.scala:45)
+    scala.collection.mutable.AbstractMap.subtractAll(Map.scala:206)
+    scala.collection.mutable.Shrinkable.$minus$minus$eq(Shrinkable.scala:60)
+
+[WARN] Object scala.collection.mutable.DefaultEntry.next accessed from multiple threads in HashMap.scala:135:
+worker-typer-17 stack trace:
+    scala.collection.mutable.DefaultEntry.next_$eq(HashMap.scala:135)
+    scala.collection.mutable.DefaultEntry.next_$eq(HashMap.scala:135)
+    scala.collection.mutable.HashTable.resize(HashTable.scala:262)
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:155)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:51)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:23)
+    scala.collection.mutable.Map$WithDefault.addOne(Map.scala:192)
+    scala.collection.mutable.Map$WithDefault.addOne(Map.scala:175)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:581:
+worker-typer-32 stack trace:
+    scala.reflect.internal.Symbols$Symbol.lock(Symbols.scala:581)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:334)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:345)
+    scala.tools.nsc.typechecker.Typers$Typer.typedDefDef(Typers.scala:2255)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5607)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:593:
+worker-typer-32 stack trace:
+    scala.reflect.internal.Symbols$Symbol.unlock(Symbols.scala:593)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:337)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:345)
+    scala.tools.nsc.typechecker.Typers$Typer.typedDefDef(Typers.scala:2255)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5607)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.reflect.internal.Types$AbstractNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2525:
+worker-typer-47 stack trace:
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2525)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.relativeInfo(Types.scala:2525)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds$(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.bounds(Types.scala:2525)
+
+[WARN] Object scala.tools.nsc.ast.NodePrinters.infolevel accessed from multiple threads in NodePrinters.scala:27:
+worker-typer-49 stack trace:
+    scala.tools.nsc.ast.NodePrinters.infolevel_$eq(NodePrinters.scala:27)
+    scala.tools.nsc.Global.withInfoLevel(Global.scala:232)
+    scala.tools.nsc.typechecker.Macros$MacroExpander.expand(Macros.scala:613)
+    scala.tools.nsc.typechecker.Macros$MacroExpander.apply(Macros.scala:600)
+    scala.tools.nsc.typechecker.Macros.standardMacroExpand(Macros.scala:764)
+    scala.tools.nsc.typechecker.Macros.standardMacroExpand$(Macros.scala:762)
+    scala.tools.nsc.Global$$anon$2.standardMacroExpand(Global.scala:539)
+    scala.tools.nsc.typechecker.AnalyzerPlugins$$anon$12.default(AnalyzerPlugins.scala:432)
+    scala.tools.nsc.typechecker.AnalyzerPlugins$$anon$12.default(AnalyzerPlugins.scala:429)
+    scala.tools.nsc.typechecker.AnalyzerPlugins.invoke(AnalyzerPlugins.scala:401)
+
+[WARN] Object scala.tools.nsc.Global$$anon$2._openMacros accessed from multiple threads in Global.scala:539:
+worker-typer-49 stack trace:
+    scala.tools.nsc.Global$$anon$2._openMacros_$eq(Global.scala:539)
+    scala.tools.nsc.typechecker.Macros.pushMacroContext(Macros.scala:544)
+    scala.tools.nsc.typechecker.Macros.pushMacroContext$(Macros.scala:544)
+    scala.tools.nsc.Global$$anon$2.pushMacroContext(Global.scala:539)
+    scala.tools.nsc.typechecker.Macros.macroExpandWithRuntime(Macros.scala:803)
+    scala.tools.nsc.typechecker.Macros.macroExpandWithRuntime$(Macros.scala:779)
+    scala.tools.nsc.Global$$anon$2.macroExpandWithRuntime(Global.scala:539)
+    scala.tools.nsc.typechecker.Macros$MacroExpander.$anonfun$expand$1(Macros.scala:620)
+    scala.tools.nsc.Global.withInfoLevel(Global.scala:233)
+    scala.tools.nsc.typechecker.Macros$MacroExpander.expand(Macros.scala:613)
+
+[WARN] Object scala.collection.mutable.FlatHashTable.table accessed from multiple threads in FlatHashTable.scala:29:
+worker-typer-53 stack trace:
+    scala.collection.mutable.FlatHashTable.table_$eq(FlatHashTable.scala:29)
+    scala.collection.mutable.FlatHashTable.growTable(FlatHashTable.scala:208)
+    scala.collection.mutable.FlatHashTable.addEntry(FlatHashTable.scala:150)
+    scala.collection.mutable.FlatHashTable.addElem(FlatHashTable.scala:130)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:37)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:21)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+    scala.collection.mutable.Growable.addAll$(Growable.scala:47)
+    scala.collection.mutable.AbstractSet.addAll(Set.scala:122)
+    scala.collection.mutable.Growable.$plus$plus$eq(Growable.scala:56)
+
+[WARN] Object scala.collection.mutable.FlatHashTable.seedvalue accessed from multiple threads in FlatHashTable.scala:43:
+worker-typer-53 stack trace:
+    scala.collection.mutable.FlatHashTable.seedvalue_$eq(FlatHashTable.scala:43)
+    scala.collection.mutable.FlatHashTable.growTable(FlatHashTable.scala:211)
+    scala.collection.mutable.FlatHashTable.addEntry(FlatHashTable.scala:150)
+    scala.collection.mutable.FlatHashTable.addElem(FlatHashTable.scala:130)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:37)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:21)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+    scala.collection.mutable.Growable.addAll$(Growable.scala:47)
+    scala.collection.mutable.AbstractSet.addAll(Set.scala:122)
+    scala.collection.mutable.Growable.$plus$plus$eq(Growable.scala:56)
+
+[WARN] Object scala.collection.mutable.FlatHashTable.threshold accessed from multiple threads in FlatHashTable.scala:37:
+worker-typer-53 stack trace:
+    scala.collection.mutable.FlatHashTable.threshold_$eq(FlatHashTable.scala:37)
+    scala.collection.mutable.FlatHashTable.growTable(FlatHashTable.scala:212)
+    scala.collection.mutable.FlatHashTable.addEntry(FlatHashTable.scala:150)
+    scala.collection.mutable.FlatHashTable.addElem(FlatHashTable.scala:130)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:37)
+    scala.collection.mutable.HashSet.addOne(HashSet.scala:21)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+    scala.collection.mutable.Growable.addAll$(Growable.scala:47)
+    scala.collection.mutable.AbstractSet.addAll(Set.scala:122)
+    scala.collection.mutable.Growable.$plus$plus$eq(Growable.scala:56)
+
+[WARN] Object scala.collection.mutable.AnyRefMap._size accessed from multiple threads in AnyRefMap.scala:291:
+worker-typer-58 stack trace:
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:291)
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Shrinkable.$minus$eq(Shrinkable.scala:25)
+    scala.collection.mutable.Shrinkable.$minus$eq$(Shrinkable.scala:25)
+    scala.collection.mutable.AbstractMap.$minus$eq(Map.scala:206)
+    scala.tools.nsc.CompilationUnits$CompilationUnit$synthetics$.$minus$eq(CompilationUnits.scala:90)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6(Typers.scala:3205)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6$adapted(Typers.scala:3201)
+    scala.Option.foreach(Option.scala:270)
+    scala.Option$WithFilter.foreach(Option.scala:222)
+
+[WARN] Object scala.collection.mutable.AnyRefMap._vacant accessed from multiple threads in AnyRefMap.scala:292:
+worker-typer-58 stack trace:
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:292)
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Shrinkable.$minus$eq(Shrinkable.scala:25)
+    scala.collection.mutable.Shrinkable.$minus$eq$(Shrinkable.scala:25)
+    scala.collection.mutable.AbstractMap.$minus$eq(Map.scala:206)
+    scala.tools.nsc.CompilationUnits$CompilationUnit$synthetics$.$minus$eq(CompilationUnits.scala:90)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6(Typers.scala:3205)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6$adapted(Typers.scala:3201)
+    scala.Option.foreach(Option.scala:270)
+    scala.Option$WithFilter.foreach(Option.scala:222)
+
+[WARN] Object scala.reflect.internal.Types$AliasArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2521:
+worker-typer-60 stack trace:
+    scala.reflect.internal.Types$AliasArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2521)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AliasArgsTypeRef.relativeInfo(Types.scala:2521)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.Types.elementExtract(Types.scala:4010)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol.scala$reflect$internal$Symbols$$infos accessed from multiple threads in Symbols.scala:1448:
+worker-typer-65 stack trace:
+    scala.reflect.internal.Symbols$Symbol.scala$reflect$internal$Symbols$$infos_$eq(Symbols.scala:1448)
+    scala.reflect.internal.Symbols$Symbol.info_$eq(Symbols.scala:1561)
+    scala.reflect.internal.Symbols$Symbol.setInfo(Symbols.scala:1567)
+    scala.reflect.internal.Symbols$Symbol.modifyInfo(Symbols.scala:1569)
+    scala.reflect.internal.Symbols$Symbol.cookJavaRawInfo(Symbols.scala:1718)
+    scala.tools.nsc.typechecker.Infer$Inferencer.checkAccessible(Infer.scala:271)
+    scala.tools.nsc.typechecker.Typers$Typer.makeAccessible(Typers.scala:568)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIdent$2(Typers.scala:5184)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIdentOrWildcard$1(Typers.scala:5199)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5650)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._validTo accessed from multiple threads in Symbols.scala:1563:
+worker-typer-65 stack trace:
+    scala.reflect.internal.Symbols$Symbol.info_$eq(Symbols.scala:1563)
+    scala.reflect.internal.Symbols$Symbol.setInfo(Symbols.scala:1567)
+    scala.reflect.internal.Symbols$Symbol.modifyInfo(Symbols.scala:1569)
+    scala.reflect.internal.Symbols$Symbol.cookJavaRawInfo(Symbols.scala:1718)
+    scala.tools.nsc.typechecker.Infer$Inferencer.checkAccessible(Infer.scala:271)
+    scala.tools.nsc.typechecker.Typers$Typer.makeAccessible(Typers.scala:568)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIdent$2(Typers.scala:5184)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIdentOrWildcard$1(Typers.scala:5199)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5650)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:293:
+worker-typer-69 stack trace:
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:293)
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Shrinkable.$minus$eq(Shrinkable.scala:25)
+    scala.collection.mutable.Shrinkable.$minus$eq$(Shrinkable.scala:25)
+    scala.collection.mutable.AbstractMap.$minus$eq(Map.scala:206)
+    scala.tools.nsc.CompilationUnits$CompilationUnit$synthetics$.$minus$eq(CompilationUnits.scala:90)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6(Typers.scala:3205)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6$adapted(Typers.scala:3201)
+    scala.Option.foreach(Option.scala:270)
+    scala.Option$WithFilter.foreach(Option.scala:222)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:294:
+worker-typer-69 stack trace:
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:294)
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Shrinkable.$minus$eq(Shrinkable.scala:25)
+    scala.collection.mutable.Shrinkable.$minus$eq$(Shrinkable.scala:25)
+    scala.collection.mutable.AbstractMap.$minus$eq(Map.scala:206)
+    scala.tools.nsc.CompilationUnits$CompilationUnit$synthetics$.$minus$eq(CompilationUnits.scala:90)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6(Typers.scala:3205)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6$adapted(Typers.scala:3201)
+    scala.Option.foreach(Option.scala:270)
+    scala.Option$WithFilter.foreach(Option.scala:222)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:295:
+worker-typer-69 stack trace:
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:295)
+    scala.collection.mutable.AnyRefMap.subtractOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Shrinkable.$minus$eq(Shrinkable.scala:25)
+    scala.collection.mutable.Shrinkable.$minus$eq$(Shrinkable.scala:25)
+    scala.collection.mutable.AbstractMap.$minus$eq(Map.scala:206)
+    scala.tools.nsc.CompilationUnits$CompilationUnit$synthetics$.$minus$eq(CompilationUnits.scala:90)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6(Typers.scala:3205)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$6$adapted(Typers.scala:3201)
+    scala.Option.foreach(Option.scala:270)
+    scala.Option$WithFilter.foreach(Option.scala:222)
+
+[WARN] Object scala.reflect.internal.Trees$SymTree.symbol accessed from multiple threads in Trees.scala:243:
+worker-typer-87 stack trace:
+    scala.reflect.internal.Trees$SymTree.symbol_$eq(Trees.scala:243)
+    scala.reflect.internal.Trees$Tree.setSymbol(Trees.scala:56)
+    scala.tools.nsc.typechecker.Infer$Inferencer.checkAccessible(Infer.scala:276)
+    scala.tools.nsc.typechecker.Typers$Typer.makeAccessible(Typers.scala:568)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIdent$2(Typers.scala:5184)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIdentOrWildcard$1(Typers.scala:5199)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5650)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.typedAppliedTypeTree$1(Typers.scala:5225)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTypTree$1(Typers.scala:5595)
+
+[WARN] Object scala.reflect.internal.Scopes$Scope.elemsCache accessed from multiple threads in Scopes.scala:80:
+worker-typer-108 stack trace:
+    scala.reflect.internal.Scopes$Scope.elemsCache_$eq(Scopes.scala:80)
+    scala.reflect.internal.Scopes$Scope.toList(Scopes.scala:395)
+    scala.reflect.internal.Symbols$Symbol.constrParamAccessors(Symbols.scala:2085)
+    scala.reflect.internal.Symbols$Symbol.caseFieldAccessors(Symbols.scala:2076)
+    scala.tools.nsc.typechecker.SyntheticMethods.accessors$1(SyntheticMethods.scala:90)
+    scala.tools.nsc.typechecker.SyntheticMethods.chooseHashcode$1(SyntheticMethods.scala:291)
+    scala.tools.nsc.typechecker.SyntheticMethods.$anonfun$addSyntheticMethods$25(SyntheticMethods.scala:303)
+    scala.tools.nsc.typechecker.SyntheticMethods.$anonfun$addSyntheticMethods$35(SyntheticMethods.scala:359)
+    scala.collection.Iterator$$anon$8.next(Iterator.scala:495)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+
+[WARN] Object scala.reflect.internal.Scopes$Scope.cachedSize accessed from multiple threads in Scopes.scala:81:
+worker-typer-108 stack trace:
+    scala.reflect.internal.Scopes$Scope.cachedSize_$eq(Scopes.scala:81)
+    scala.reflect.internal.Scopes$Scope.toList(Scopes.scala:396)
+    scala.reflect.internal.Symbols$Symbol.constrParamAccessors(Symbols.scala:2085)
+    scala.reflect.internal.Symbols$Symbol.caseFieldAccessors(Symbols.scala:2076)
+    scala.tools.nsc.typechecker.SyntheticMethods.accessors$1(SyntheticMethods.scala:90)
+    scala.tools.nsc.typechecker.SyntheticMethods.chooseHashcode$1(SyntheticMethods.scala:291)
+    scala.tools.nsc.typechecker.SyntheticMethods.$anonfun$addSyntheticMethods$25(SyntheticMethods.scala:303)
+    scala.tools.nsc.typechecker.SyntheticMethods.$anonfun$addSyntheticMethods$35(SyntheticMethods.scala:359)
+    scala.collection.Iterator$$anon$8.next(Iterator.scala:495)
+    scala.collection.mutable.Growable.addAll(Growable.scala:50)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:269:
+worker-typer-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:269)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:270:
+worker-typer-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:270)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:271:
+worker-typer-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:271)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object scala.collection.mutable.AnyRefMap._size accessed from multiple threads in AnyRefMap.scala:272:
+worker-typer-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:272)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object scala.reflect.internal.Scopes$ScopeEntry.next accessed from multiple threads in Scopes.scala:42:
+worker-typer-156 stack trace:
+    scala.reflect.internal.Scopes$ScopeEntry.next_$eq(Scopes.scala:42)
+    scala.reflect.internal.Scopes$Scope.$anonfun$unlink$1(Scopes.scala:211)
+    scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:12)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Scopes$Scope.unlink(Scopes.scala:205)
+    scala.tools.nsc.symtab.classfile.ClassfileParser.unlinkIfPresent$1(ClassfileParser.scala:1096)
+    scala.tools.nsc.symtab.classfile.ClassfileParser.enterClassAndModule$1(ClassfileParser.scala:1100)
+    scala.tools.nsc.symtab.classfile.ClassfileParser.$anonfun$enterOwnInnerClasses$1(ClassfileParser.scala:1108)
+    scala.tools.nsc.symtab.classfile.ClassfileParser.$anonfun$enterOwnInnerClasses$1$adapted(ClassfileParser.scala:1104)
+
+[WARN] Object  accessed from multiple threads in BitSet.scala:73:
+worker-typer-176 stack trace:
+    scala.collection.mutable.BitSet.updateWord(BitSet.scala:73)
+    scala.collection.mutable.BitSet.addOne(BitSet.scala:53)
+    scala.collection.mutable.BitSet.addOne(BitSet.scala:25)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractSet.$plus$eq(Set.scala:122)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.computeLazyType$1(BaseTypeSeqs.scala:81)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.$anonfun$apply$1(BaseTypeSeqs.scala:100)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+
+[WARN] Object  accessed from multiple threads in BaseTypeSeqs.scala:87:
+worker-typer-176 stack trace:
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.computeLazyType$1(BaseTypeSeqs.scala:87)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.$anonfun$apply$1(BaseTypeSeqs.scala:100)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.apply(BaseTypeSeqs.scala:70)
+    scala.reflect.internal.Types$CompoundType.baseType(Types.scala:1459)
+    scala.reflect.internal.Types$PolyType.baseType(Types.scala:2721)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2314)
+    scala.reflect.internal.Types$SimpleTypeProxy.baseType(Types.scala:161)
+    scala.reflect.internal.Types$SimpleTypeProxy.baseType$(Types.scala:161)
+
+[WARN] Object  accessed from multiple threads in FlatHashTable.scala:178:
+worker-typer-179 stack trace:
+    scala.collection.mutable.FlatHashTable.removeElem(FlatHashTable.scala:178)
+    scala.collection.mutable.HashSet.subtractOne(HashSet.scala:41)
+    scala.collection.mutable.HashSet.subtractOne(HashSet.scala:21)
+    scala.collection.mutable.Shrinkable.loop$1(Shrinkable.scala:48)
+    scala.collection.mutable.Shrinkable.subtractAll(Shrinkable.scala:53)
+    scala.collection.mutable.Shrinkable.subtractAll$(Shrinkable.scala:45)
+    scala.collection.mutable.AbstractSet.subtractAll(Set.scala:122)
+    scala.collection.mutable.Shrinkable.$minus$minus$eq(Shrinkable.scala:60)
+    scala.collection.mutable.Shrinkable.$minus$minus$eq$(Shrinkable.scala:60)
+    scala.collection.mutable.AbstractSet.$minus$minus$eq(Set.scala:122)
+
+[WARN] Object scala.reflect.internal.SymbolTable.scala$reflect$internal$tpe$GlbLubs$$globalGlbDepth accessed from multiple threads in SymbolTable.scala:19:
+worker-typer-196 stack trace:
+    scala.reflect.internal.SymbolTable.scala$reflect$internal$tpe$GlbLubs$$globalGlbDepth_$eq(SymbolTable.scala:19)
+    scala.reflect.internal.tpe.GlbLubs.glb1$1(GlbLubs.scala:503)
+    scala.reflect.internal.tpe.GlbLubs.glb0$1(GlbLubs.scala:443)
+    scala.reflect.internal.tpe.GlbLubs.glbNorm(GlbLubs.scala:526)
+    scala.reflect.internal.tpe.GlbLubs.glbNorm$(GlbLubs.scala:423)
+    scala.reflect.internal.SymbolTable.glbNorm(SymbolTable.scala:19)
+    scala.reflect.internal.tpe.GlbLubs.glb(GlbLubs.scala:418)
+    scala.reflect.internal.tpe.GlbLubs.glb$(GlbLubs.scala:415)
+    scala.reflect.internal.SymbolTable.glb(SymbolTable.scala:19)
+    scala.reflect.internal.Types.$anonfun$mergePrefixAndArgs$7(Types.scala:4723)
+
+[WARN] Object scala.reflect.internal.Scopes$ScopeEntry.tail accessed from multiple threads in Scopes.scala:38:
+worker-typer-199 stack trace:
+    scala.reflect.internal.Scopes$ScopeEntry.tail_$eq(Scopes.scala:38)
+    scala.reflect.internal.Scopes$Scope.$anonfun$enterInHash$1(Scopes.scala:132)
+    scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:12)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Scopes$Scope.enterInHash(Scopes.scala:130)
+    scala.reflect.internal.Scopes$Scope.enterAllInHash(Scopes.scala:165)
+    scala.reflect.internal.Scopes$Scope.enterAllInHash(Scopes.scala:164)
+    scala.reflect.internal.Scopes$Scope.enterAllInHash(Scopes.scala:164)
+    scala.reflect.internal.Scopes$Scope.enterAllInHash(Scopes.scala:164)
+
+[WARN] Object scala.reflect.internal.Types$AbstractArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2522:
+worker-typer-265 stack trace:
+    scala.reflect.internal.Types$AbstractArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2522)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AbstractArgsTypeRef.relativeInfo(Types.scala:2522)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds$(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractArgsTypeRef.bounds(Types.scala:2522)
+
+[WARN] Object scala.tools.nsc.typechecker.Contexts$Context.enclClass accessed from multiple threads in Contexts.scala:194:
+worker-typer-265 stack trace:
+    scala.tools.nsc.typechecker.Contexts$Context.enclClass_$eq(Contexts.scala:194)
+    scala.tools.nsc.typechecker.Contexts$Context.savingEnclClass(Contexts.scala:198)
+    scala.tools.nsc.typechecker.Contexts$Context.implicits(Contexts.scala:929)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:907)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:914)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:914)
+    scala.tools.nsc.typechecker.Contexts$Context.withOuter$1(Contexts.scala:897)
+    scala.tools.nsc.typechecker.Contexts$Context.implicitss(Contexts.scala:914)
+
+[WARN] Object scala.tools.nsc.typechecker.Implicits$ImplicitInfo.useCountView accessed from multiple threads in Implicits.scala:250:
+worker-typer-274 stack trace:
+    scala.tools.nsc.typechecker.Implicits$ImplicitInfo.useCountView_$eq(Implicits.scala:250)
+    scala.tools.nsc.typechecker.Implicits$ImplicitSearch$ImplicitComputation.findBest(Implicits.scala:1025)
+    scala.tools.nsc.typechecker.Implicits$ImplicitSearch.searchImplicit(Implicits.scala:1074)
+    scala.tools.nsc.typechecker.Implicits$ImplicitSearch.bestImplicit(Implicits.scala:1497)
+    scala.tools.nsc.typechecker.Implicits.inferImplicit(Implicits.scala:95)
+    scala.tools.nsc.typechecker.Implicits.inferImplicit$(Implicits.scala:82)
+    scala.tools.nsc.Global$$anon$2.inferImplicit(Global.scala:539)
+    scala.tools.nsc.typechecker.Implicits.inferImplicitView(Implicits.scala:44)
+    scala.tools.nsc.typechecker.Implicits.inferImplicitView$(Implicits.scala:43)
+    scala.tools.nsc.Global$$anon$2.inferImplicitView(Global.scala:539)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.mask accessed from multiple threads in AnyRefMap.scala:201:
+worker-typer-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:201)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.scala$collection$mutable$AnyRefMap$$_hashes accessed from multiple threads in AnyRefMap.scala:202:
+worker-typer-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:202)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.scala$collection$mutable$AnyRefMap$$_keys accessed from multiple threads in AnyRefMap.scala:203:
+worker-typer-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:203)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.scala$collection$mutable$AnyRefMap$$_values accessed from multiple threads in AnyRefMap.scala:204:
+worker-typer-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:204)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap._vacant accessed from multiple threads in AnyRefMap.scala:205:
+worker-typer-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:205)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.tools.nsc.typechecker.Implicits$ImplicitInfo.useCountArg accessed from multiple threads in Implicits.scala:249:
+worker-typer-347 stack trace:
+    scala.tools.nsc.typechecker.Implicits$ImplicitInfo.useCountArg_$eq(Implicits.scala:249)
+    scala.tools.nsc.typechecker.Implicits$ImplicitSearch$ImplicitComputation.findBest(Implicits.scala:1026)
+    scala.tools.nsc.typechecker.Implicits$ImplicitSearch.searchImplicit(Implicits.scala:1074)
+    scala.tools.nsc.typechecker.Implicits$ImplicitSearch.bestImplicit(Implicits.scala:1497)
+    scala.tools.nsc.typechecker.Implicits.inferImplicit(Implicits.scala:95)
+    scala.tools.nsc.typechecker.Implicits.inferImplicit$(Implicits.scala:82)
+    scala.tools.nsc.Global$$anon$2.inferImplicit(Global.scala:539)
+    scala.tools.nsc.typechecker.Implicits.inferImplicitFor(Implicits.scala:40)
+    scala.tools.nsc.typechecker.Implicits.inferImplicitFor$(Implicits.scala:39)
+    scala.tools.nsc.Global$$anon$2.inferImplicitFor(Global.scala:539)
+
+[WARN] Object scala.collection.mutable.ListBuffer.last0 accessed from multiple threads in ListBuffer.scala:39:
+worker-typer-353 stack trace:
+    scala.collection.mutable.ListBuffer.last0_$eq(ListBuffer.scala:39)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:98)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:31)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractBuffer.$plus$eq(Buffer.scala:174)
+    scala.tools.nsc.typechecker.Typers$Typer.checkFeature(Typers.scala:746)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTypeDefImpl(Typers.scala:2342)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedTypeDef$2(Typers.scala:2314)
+    scala.tools.nsc.typechecker.Typers$Typer.typerWithLocalContext(Typers.scala:475)
+
+[WARN] Object scala.collection.mutable.ListBuffer.len accessed from multiple threads in ListBuffer.scala:41:
+worker-typer-353 stack trace:
+    scala.collection.mutable.ListBuffer.len_$eq(ListBuffer.scala:41)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:99)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:31)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractBuffer.$plus$eq(Buffer.scala:174)
+    scala.tools.nsc.typechecker.Typers$Typer.checkFeature(Typers.scala:746)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTypeDefImpl(Typers.scala:2342)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedTypeDef$2(Typers.scala:2314)
+    scala.tools.nsc.typechecker.Typers$Typer.typerWithLocalContext(Typers.scala:475)
+
+[WARN] Object scala.reflect.internal.SymbolTable.ph accessed from multiple threads in SymbolTable.scala:240:
+worker-patmat-5 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:240)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$rawInfo$1(Symbols.scala:1646)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.rawInfo(Symbols.scala:1608)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1550)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Symbols$Symbol.tpe_$times(Symbols.scala:1503)
+
+[WARN] Object scala.reflect.internal.SymbolTable.per accessed from multiple threads in SymbolTable.scala:241:
+worker-patmat-5 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:241)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$rawInfo$1(Symbols.scala:1646)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.rawInfo(Symbols.scala:1608)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1550)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Symbols$Symbol.tpe_$times(Symbols.scala:1503)
+
+[WARN] Object scala.reflect.internal.Types$AbstractNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2525:
+worker-patmat-5 stack trace:
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2525)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.relativeInfo(Types.scala:2525)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.Types.elementExtract(Types.scala:4010)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod accessed from multiple threads in Types.scala:2221:
+worker-patmat-10 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod_$eq(Types.scala:2221)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2561)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.Types$AbstractTypeRef.baseTypeSeqImpl(Types.scala:2166)
+    scala.reflect.internal.Types$AbstractTypeRef.baseTypeSeqImpl$(Types.scala:2166)
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.baseTypeSeqImpl(Types.scala:2525)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2567)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+
+[WARN] Object scala.tools.nsc.Global$$anon$2.scala$tools$nsc$typechecker$TypeDiagnostics$$isTyperInPattern accessed from multiple threads in Global.scala:539:
+worker-patmat-18 stack trace:
+    scala.tools.nsc.Global$$anon$2.scala$tools$nsc$typechecker$TypeDiagnostics$$isTyperInPattern_$eq(Global.scala:539)
+    scala.tools.nsc.typechecker.TypeDiagnostics.typingInPattern(TypeDiagnostics.scala:62)
+    scala.tools.nsc.typechecker.TypeDiagnostics.typingInPattern$(TypeDiagnostics.scala:60)
+    scala.tools.nsc.Global$$anon$2.typingInPattern(Global.scala:539)
+    scala.tools.nsc.typechecker.Typers$Typer.typedPattern(Typers.scala:5826)
+    scala.tools.nsc.typechecker.Typers$Typer.typedCase(Typers.scala:2488)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedCases$1(Typers.scala:2522)
+    scala.collection.immutable.List.loop$4(List.scala:427)
+    scala.collection.immutable.List.mapConserve(List.scala:452)
+    scala.tools.nsc.typechecker.Typers$Typer.typedCases(Typers.scala:2521)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:151:
+worker-patmat-18 stack trace:
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:151)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:51)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:23)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.collection.mutable.MapOps.update(Map.scala:85)
+    scala.collection.mutable.MapOps.update$(Map.scala:85)
+    scala.collection.mutable.AbstractMap.update(Map.scala:206)
+
+[WARN] Object scala.collection.mutable.HashTable.tableSize accessed from multiple threads in HashTable.scala:53:
+worker-patmat-18 stack trace:
+    scala.collection.mutable.HashTable.tableSize_$eq(HashTable.scala:53)
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:152)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:51)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:23)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.collection.mutable.MapOps.update(Map.scala:85)
+    scala.collection.mutable.MapOps.update$(Map.scala:85)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:247:
+worker-patmat-18 stack trace:
+    scala.collection.mutable.HashTable.clearTable(HashTable.scala:247)
+    scala.collection.mutable.HashMap.clear(HashMap.scala:56)
+    scala.reflect.internal.tpe.GlbLubs.lub(GlbLubs.scala:255)
+    scala.reflect.internal.tpe.GlbLubs.lub$(GlbLubs.scala:233)
+    scala.reflect.internal.SymbolTable.lub(SymbolTable.scala:19)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMatch(Typers.scala:2541)
+    scala.tools.nsc.typechecker.Typers$Typer.typedVirtualizedMatch$1(Typers.scala:4510)
+    scala.tools.nsc.typechecker.Typers$Typer.typedOutsidePatternMode$1(Typers.scala:5631)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5662)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+
+[WARN] Object scala.reflect.internal.Types$AliasNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2524:
+worker-patmat-99 stack trace:
+    scala.reflect.internal.Types$AliasNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2524)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AliasNoArgsTypeRef.relativeInfo(Types.scala:2524)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.Types.elementExtract(Types.scala:4010)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:581:
+worker-patmat-165 stack trace:
+    scala.reflect.internal.Symbols$Symbol.lock(Symbols.scala:581)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:334)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:318)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:335)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:345)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2020)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+
+[WARN] Object scala.reflect.internal.SymbolTable.scala$reflect$internal$tpe$GlbLubs$$globalGlbDepth accessed from multiple threads in SymbolTable.scala:19:
+worker-patmat-165 stack trace:
+    scala.reflect.internal.SymbolTable.scala$reflect$internal$tpe$GlbLubs$$globalGlbDepth_$eq(SymbolTable.scala:19)
+    scala.reflect.internal.tpe.GlbLubs.glb1$1(GlbLubs.scala:503)
+    scala.reflect.internal.tpe.GlbLubs.glb0$1(GlbLubs.scala:443)
+    scala.reflect.internal.tpe.GlbLubs.glbNorm(GlbLubs.scala:526)
+    scala.reflect.internal.tpe.GlbLubs.glbNorm$(GlbLubs.scala:423)
+    scala.reflect.internal.SymbolTable.glbNorm(SymbolTable.scala:19)
+    scala.reflect.internal.tpe.GlbLubs.glb(GlbLubs.scala:407)
+    scala.reflect.internal.tpe.GlbLubs.glb$(GlbLubs.scala:400)
+    scala.reflect.internal.SymbolTable.glb(SymbolTable.scala:19)
+    scala.tools.nsc.transform.patmat.MatchTranslation$MatchTranslator$BoundTree.glbWith(MatchTranslation.scala:74)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:593:
+worker-patmat-165 stack trace:
+    scala.reflect.internal.Symbols$Symbol.unlock(Symbols.scala:593)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:337)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:318)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:335)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:345)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2020)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+
+[WARN] Object scala.reflect.internal.Types$AliasArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2521:
+worker-patmat-274 stack trace:
+    scala.reflect.internal.Types$AliasArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2521)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AliasArgsTypeRef.relativeInfo(Types.scala:2521)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.tpe.TypeComparers.firstTry$1(TypeComparers.scala:453)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.normalized accessed from multiple threads in Types.scala:2222:
+worker-patmat-312 stack trace:
+    scala.reflect.internal.Types$TypeRef.normalized_$eq(Types.scala:2222)
+    scala.reflect.internal.Types$TypeRef.normalize(Types.scala:2345)
+    scala.reflect.internal.tpe.CommonOwners$CommonOwnerMap$1.traverse(CommonOwners.scala:31)
+    scala.reflect.internal.tpe.TypeMaps$TypeTraverser.apply(TypeMaps.scala:209)
+    scala.reflect.internal.tpe.TypeMaps$TypeTraverser.apply(TypeMaps.scala:207)
+    scala.collection.immutable.List.loop$4(List.scala:427)
+    scala.collection.immutable.List.mapConserve(List.scala:452)
+    scala.reflect.internal.Types$TypeRef.mapOver(Types.scala:2190)
+    scala.reflect.internal.tpe.CommonOwners$CommonOwnerMap$1.traverse(CommonOwners.scala:35)
+    scala.reflect.internal.tpe.CommonOwners.$anonfun$commonOwner$1(CommonOwners.scala:40)
+
+[WARN] Object scala.reflect.internal.Symbols$TypeSymbol.tpePeriod accessed from multiple threads in Symbols.scala:3086:
+worker-refchecks-1 stack trace:
+    scala.reflect.internal.Symbols$TypeSymbol.tpePeriod_$eq(Symbols.scala:3086)
+    scala.reflect.internal.Symbols$TypeSymbol.maybeUpdateTypeCache(Symbols.scala:3153)
+    scala.reflect.internal.Symbols$TypeSymbol.$anonfun$tpe_$times$1(Symbols.scala:3130)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$TypeSymbol.tpe_$times(Symbols.scala:3129)
+    scala.reflect.internal.Symbols$Symbol.tpe(Symbols.scala:1468)
+    scala.tools.nsc.typechecker.RefChecks$RefCheckTransformer.validateBaseTypes(RefChecks.scala:880)
+    scala.tools.nsc.typechecker.RefChecks$RefCheckTransformer.transform(RefChecks.scala:1701)
+    scala.tools.nsc.typechecker.RefChecks$RefCheckTransformer.transform(RefChecks.scala:107)
+
+[WARN] Object scala.reflect.internal.SymbolTable.ph accessed from multiple threads in SymbolTable.scala:240:
+worker-refchecks-1 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:240)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$rawInfo$1(Symbols.scala:1646)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.rawInfo(Symbols.scala:1608)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1550)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Definitions$DefinitionsClass.isJavaVarArgsMethod(Definitions.scala:396)
+
+[WARN] Object scala.reflect.internal.SymbolTable.per accessed from multiple threads in SymbolTable.scala:241:
+worker-refchecks-1 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:241)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$rawInfo$1(Symbols.scala:1646)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.rawInfo(Symbols.scala:1608)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1550)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Definitions$DefinitionsClass.isJavaVarArgsMethod(Definitions.scala:396)
+
+[WARN] Object scala.reflect.internal.Types$AbstractNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2525:
+worker-refchecks-1 stack trace:
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2525)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.relativeInfo(Types.scala:2525)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds$(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractNoArgsTypeRef.bounds(Types.scala:2525)
+
+[WARN] Object scala.tools.nsc.typechecker.Contexts$ContextReporter.scala$tools$nsc$typechecker$Contexts$ContextReporter$$_errorBuffer accessed from multiple threads in Contexts.scala:1285:
+worker-refchecks-2 stack trace:
+    scala.tools.nsc.typechecker.Contexts$ContextReporter.withFreshErrorBuffer(Contexts.scala:1285)
+    scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:703)
+    scala.tools.nsc.typechecker.Typers$Typer.typedSelect$1(Typers.scala:5051)
+    scala.tools.nsc.typechecker.Typers$Typer.typedSelectOrSuperCall$1(Typers.scala:5108)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5653)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.parentsPeriod accessed from multiple threads in Types.scala:2219:
+worker-refchecks-3 stack trace:
+    scala.reflect.internal.Types$TypeRef.parentsPeriod_$eq(Types.scala:2219)
+    scala.reflect.internal.Types.defineParentsOfTypeRef(Types.scala:2549)
+    scala.reflect.internal.Types.defineParentsOfTypeRef$(Types.scala:2546)
+    scala.reflect.internal.SymbolTable.defineParentsOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.parents(Types.scala:2383)
+    scala.tools.nsc.typechecker.RefChecks$RefCheckTransformer.$anonfun$validateBaseTypes$2(RefChecks.scala:876)
+    scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:12)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$Type.lockThisType(Types.scala:267)
+    scala.tools.nsc.typechecker.RefChecks$RefCheckTransformer.register$1(RefChecks.scala:860)
+
+[WARN] Object scala.tools.nsc.typechecker.Contexts$ContextReporter.scala$tools$nsc$typechecker$Contexts$ContextReporter$$_errorBuffer accessed from multiple threads in Contexts.scala:1287:
+worker-refchecks-9 stack trace:
+    scala.tools.nsc.typechecker.Contexts$ContextReporter.withFreshErrorBuffer(Contexts.scala:1287)
+    scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:703)
+    scala.tools.nsc.typechecker.Typers$Typer.typedSelect$1(Typers.scala:5051)
+    scala.tools.nsc.typechecker.Typers$Typer.typedSelectOrSuperCall$1(Typers.scala:5108)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5653)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.reflect.internal.Types$AliasNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2524:
+worker-refchecks-17 stack trace:
+    scala.reflect.internal.Types$AliasNoArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2524)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AliasNoArgsTypeRef.relativeInfo(Types.scala:2524)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.tpe.TypeComparers.firstTry$1(TypeComparers.scala:453)
+
+[WARN] Object scala.reflect.internal.Types$AliasArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2521:
+worker-refchecks-17 stack trace:
+    scala.reflect.internal.Types$AliasArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2521)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AliasArgsTypeRef.relativeInfo(Types.scala:2521)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.tpe.TypeComparers.firstTry$1(TypeComparers.scala:453)
+
+[WARN] Object scala.reflect.internal.Types$AbstractArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2522:
+worker-refchecks-47 stack trace:
+    scala.reflect.internal.Types$AbstractArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2522)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AbstractArgsTypeRef.relativeInfo(Types.scala:2522)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractTypeRef.bounds$(Types.scala:2164)
+    scala.reflect.internal.Types$AbstractArgsTypeRef.bounds(Types.scala:2522)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod accessed from multiple threads in Types.scala:2221:
+worker-refchecks-60 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod_$eq(Types.scala:2221)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2561)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1(BaseTypeSeqs.scala:199)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1$adapted(BaseTypeSeqs.scala:198)
+    scala.collection.immutable.List.foreach(List.scala:309)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq(BaseTypeSeqs.scala:198)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq$(BaseTypeSeqs.scala:186)
+
+[WARN] Object scala.reflect.internal.Symbols$TypeSymbol.tyconCache accessed from multiple threads in Symbols.scala:3083:
+worker-refchecks-94 stack trace:
+    scala.reflect.internal.Symbols$TypeSymbol.tyconCache_$eq(Symbols.scala:3083)
+    scala.reflect.internal.Symbols$TypeSymbol.setTyconCache(Symbols.scala:3145)
+    scala.reflect.internal.Symbols$TypeSymbol.updateTypeCache(Symbols.scala:3175)
+    scala.reflect.internal.Symbols$TypeSymbol.maybeUpdateTypeCache(Symbols.scala:3155)
+    scala.reflect.internal.Symbols$TypeSymbol.$anonfun$tpe_$times$1(Symbols.scala:3130)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$TypeSymbol.tpe_$times(Symbols.scala:3129)
+    scala.reflect.internal.Symbols$Symbol.tpe(Symbols.scala:1468)
+    scala.reflect.internal.Types$ExistentialType.$anonfun$isStraightApplication$1(Types.scala:2805)
+
+[WARN] Object  accessed from multiple threads in BitSet.scala:73:
+worker-refchecks-176 stack trace:
+    scala.collection.mutable.BitSet.updateWord(BitSet.scala:73)
+    scala.collection.mutable.BitSet.addOne(BitSet.scala:53)
+    scala.collection.mutable.BitSet.addOne(BitSet.scala:25)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractSet.$plus$eq(Set.scala:122)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.computeLazyType$1(BaseTypeSeqs.scala:81)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.$anonfun$apply$1(BaseTypeSeqs.scala:100)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+
+[WARN] Object  accessed from multiple threads in BaseTypeSeqs.scala:87:
+worker-refchecks-176 stack trace:
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.computeLazyType$1(BaseTypeSeqs.scala:87)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.$anonfun$apply$1(BaseTypeSeqs.scala:100)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.BaseTypeSeqs$BaseTypeSeq.apply(BaseTypeSeqs.scala:70)
+    scala.reflect.internal.Types$CompoundType.baseType(Types.scala:1459)
+    scala.reflect.internal.Types$PolyType.baseType(Types.scala:2721)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2314)
+    scala.reflect.internal.SymbolPairs.sameInBaseClass(SymbolPairs.scala:38)
+    scala.reflect.internal.SymbolPairs$Cursor.$anonfun$init$3(SymbolPairs.scala:192)
+
+[WARN] Object scala.reflect.internal.SymbolTable.ph accessed from multiple threads in SymbolTable.scala:240:
+worker-erasure-1 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:240)
+    scala.reflect.internal.SymbolTable.$anonfun$pushPhase$1(SymbolTable.scala:245)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.SymbolTable.pushPhase(SymbolTable.scala:243)
+    scala.reflect.internal.SymbolTable.enteringPhase(SymbolTable.scala:288)
+    scala.reflect.internal.SymbolTable.exitingPhase(SymbolTable.scala:311)
+    scala.tools.nsc.Global.exitingPostErasure(Global.scala:1081)
+    scala.tools.nsc.transform.Erasure$ErasureTransformer.checkNoDeclaredDoubleDefs(Erasure.scala:883)
+    scala.tools.nsc.transform.Erasure$ErasureTransformer.scala$tools$nsc$transform$Erasure$ErasureTransformer$$checkNoDoubleDefs(Erasure.scala:920)
+
+[WARN] Object scala.reflect.internal.SymbolTable.per accessed from multiple threads in SymbolTable.scala:241:
+worker-erasure-1 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:241)
+    scala.reflect.internal.SymbolTable.$anonfun$pushPhase$1(SymbolTable.scala:245)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.SymbolTable.pushPhase(SymbolTable.scala:243)
+    scala.reflect.internal.SymbolTable.enteringPhase(SymbolTable.scala:288)
+    scala.reflect.internal.SymbolTable.exitingPhase(SymbolTable.scala:311)
+    scala.tools.nsc.Global.exitingPostErasure(Global.scala:1081)
+    scala.tools.nsc.transform.Erasure$ErasureTransformer.checkNoDeclaredDoubleDefs(Erasure.scala:883)
+    scala.tools.nsc.transform.Erasure$ErasureTransformer.scala$tools$nsc$transform$Erasure$ErasureTransformer$$checkNoDoubleDefs(Erasure.scala:920)
+
+[WARN] Object scala.reflect.internal.Symbols$TypeSymbol.tpePeriod accessed from multiple threads in Symbols.scala:3086:
+worker-erasure-1 stack trace:
+    scala.reflect.internal.Symbols$TypeSymbol.tpePeriod_$eq(Symbols.scala:3086)
+    scala.reflect.internal.Symbols$TypeSymbol.updateTypeCache(Symbols.scala:3164)
+    scala.reflect.internal.Symbols$TypeSymbol.maybeUpdateTypeCache(Symbols.scala:3155)
+    scala.reflect.internal.Symbols$TypeSymbol.$anonfun$tpe_$times$1(Symbols.scala:3130)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$TypeSymbol.tpe_$times(Symbols.scala:3129)
+    scala.reflect.internal.Symbols$Symbol.typeOfThis(Symbols.scala:2052)
+    scala.reflect.internal.Types$ThisType.underlying(Types.scala:1198)
+    scala.reflect.internal.Types$SimpleTypeProxy.baseType(Types.scala:161)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod accessed from multiple threads in Types.scala:2221:
+worker-erasure-1 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod_$eq(Types.scala:2221)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2561)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1(BaseTypeSeqs.scala:199)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1$adapted(BaseTypeSeqs.scala:198)
+    scala.collection.immutable.List.foreach(List.scala:309)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq(BaseTypeSeqs.scala:198)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq$(BaseTypeSeqs.scala:186)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqCache accessed from multiple threads in Types.scala:2220:
+worker-erasure-2 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqCache_$eq(Types.scala:2220)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2566)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1(BaseTypeSeqs.scala:199)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1$adapted(BaseTypeSeqs.scala:198)
+    scala.collection.immutable.List.foreach(List.scala:309)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq(BaseTypeSeqs.scala:198)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq$(BaseTypeSeqs.scala:186)
+
+[WARN] Object scala.reflect.internal.Trees$TypeTree.orig accessed from multiple threads in Trees.scala:922:
+worker-erasure-2 stack trace:
+    scala.reflect.internal.Trees$TypeTree.orig_$eq(Trees.scala:922)
+    scala.reflect.internal.Trees$TypeTree.setOriginal(Trees.scala:939)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1914)
+    scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1798)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5608)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.transform.Erasure$Eraser.typed1(Erasure.scala:790)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+
+[WARN] Object scala.reflect.internal.Trees$Tree.rawatt accessed from multiple threads in Trees.scala:38:
+worker-erasure-2 stack trace:
+    scala.reflect.internal.Trees$Tree.rawatt_$eq(Trees.scala:38)
+    scala.reflect.internal.StdAttachments$Attachable.pos_$eq(StdAttachments.scala:26)
+    scala.reflect.internal.StdAttachments$Attachable.pos_$eq$(StdAttachments.scala:26)
+    scala.reflect.internal.Trees$Tree.pos_$eq(Trees.scala:38)
+    scala.reflect.internal.StdAttachments$Attachable.setPos(StdAttachments.scala:27)
+    scala.reflect.internal.StdAttachments$Attachable.setPos$(StdAttachments.scala:27)
+    scala.reflect.internal.Trees$Tree.setPos(Trees.scala:38)
+    scala.reflect.internal.Trees$TypeTree.setOriginal(Trees.scala:939)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1914)
+    scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1798)
+
+[WARN] Object scala.reflect.internal.Trees$Tree.rawtpe accessed from multiple threads in Trees.scala:51:
+worker-erasure-2 stack trace:
+    scala.reflect.internal.Trees$Tree.setType(Trees.scala:51)
+    scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1914)
+    scala.tools.nsc.typechecker.Typers$Typer.typedClassDef(Typers.scala:1798)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5608)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.transform.Erasure$Eraser.typed1(Erasure.scala:790)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.tools.nsc.transform.Erasure.scala$tools$nsc$typechecker$TypeDiagnostics$$isTyperInPattern accessed from multiple threads in Erasure.scala:15:
+worker-erasure-10 stack trace:
+    scala.tools.nsc.transform.Erasure.scala$tools$nsc$typechecker$TypeDiagnostics$$isTyperInPattern_$eq(Erasure.scala:15)
+    scala.tools.nsc.typechecker.TypeDiagnostics.typingInPattern(TypeDiagnostics.scala:62)
+    scala.tools.nsc.typechecker.TypeDiagnostics.typingInPattern$(TypeDiagnostics.scala:60)
+    scala.tools.nsc.transform.Erasure.typingInPattern(Erasure.scala:15)
+    scala.tools.nsc.typechecker.Typers$Typer.typedPattern(Typers.scala:5826)
+    scala.tools.nsc.typechecker.Typers$Typer.typedCase(Typers.scala:2488)
+    scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedCases$1(Typers.scala:2522)
+    scala.collection.immutable.List.loop$4(List.scala:427)
+    scala.collection.immutable.List.mapConserve(List.scala:452)
+    scala.tools.nsc.typechecker.Typers$Typer.typedCases(Typers.scala:2521)
+
+[WARN] Object scala.tools.nsc.typechecker.Contexts$Context._undetparams accessed from multiple threads in Contexts.scala:230:
+worker-erasure-28 stack trace:
+    scala.tools.nsc.typechecker.Contexts$Context._undetparams_$eq(Contexts.scala:230)
+    scala.tools.nsc.typechecker.Contexts$Context.undetparams_$eq(Contexts.scala:321)
+    scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:690)
+    scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4776)
+    scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4804)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5652)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+
+[WARN] Object scala.tools.nsc.typechecker.Contexts$Context.savedTypeBounds accessed from multiple threads in Contexts.scala:288:
+worker-erasure-28 stack trace:
+    scala.tools.nsc.typechecker.Contexts$Context.savedTypeBounds_$eq(Contexts.scala:288)
+    scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:691)
+    scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4776)
+    scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4804)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5652)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.tools.nsc.typechecker.Contexts$Context.namedApplyBlockInfo accessed from multiple threads in Contexts.scala:253:
+worker-erasure-28 stack trace:
+    scala.tools.nsc.typechecker.Contexts$Context.namedApplyBlockInfo_$eq(Contexts.scala:253)
+    scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:692)
+    scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4776)
+    scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4804)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5652)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+    scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5684)
+
+[WARN] Object scala.collection.mutable.ArrayDeque.scala$collection$mutable$ArrayDeque$$start accessed from multiple threads in ArrayDeque.scala:35:
+worker-erasure-28 stack trace:
+    scala.collection.mutable.ArrayDeque.scala$collection$mutable$ArrayDeque$$start_$eq(ArrayDeque.scala:35)
+    scala.collection.mutable.ArrayDeque.scala$collection$mutable$ArrayDeque$$prependAssumingCapacity(ArrayDeque.scala:84)
+    scala.collection.mutable.ArrayDeque.prepend(ArrayDeque.scala:74)
+    scala.collection.mutable.Stack.push(Stack.scala:42)
+    scala.tools.nsc.typechecker.TypeDiagnostics$TyperDiagnostics$checkDead$.updateExpr(TypeDiagnostics.scala:733)
+    scala.tools.nsc.typechecker.Typers$Typer.doTypedApply(Typers.scala:3666)
+    scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4795)
+    scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4804)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5652)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+
+[WARN] Object  accessed from multiple threads in ArrayDeque.scala:85:
+worker-erasure-28 stack trace:
+    scala.collection.mutable.ArrayDeque.scala$collection$mutable$ArrayDeque$$prependAssumingCapacity(ArrayDeque.scala:85)
+    scala.collection.mutable.ArrayDeque.prepend(ArrayDeque.scala:74)
+    scala.collection.mutable.Stack.push(Stack.scala:42)
+    scala.tools.nsc.typechecker.TypeDiagnostics$TyperDiagnostics$checkDead$.updateExpr(TypeDiagnostics.scala:733)
+    scala.tools.nsc.typechecker.Typers$Typer.doTypedApply(Typers.scala:3666)
+    scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4795)
+    scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4804)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5652)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:581:
+worker-erasure-32 stack trace:
+    scala.reflect.internal.Symbols$Symbol.lock(Symbols.scala:581)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:334)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:345)
+    scala.tools.nsc.typechecker.Typers$Typer.typedDefDef(Typers.scala:2255)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5607)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.transform.Erasure$Eraser.typed1(Erasure.scala:790)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+
+[WARN] Object scala.reflect.internal.Symbols$Symbol._rawflags accessed from multiple threads in Symbols.scala:593:
+worker-erasure-32 stack trace:
+    scala.reflect.internal.Symbols$Symbol.unlock(Symbols.scala:593)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:337)
+    scala.tools.nsc.typechecker.Typers$Typer.checkNonCyclic(Typers.scala:345)
+    scala.tools.nsc.typechecker.Typers$Typer.typedDefDef(Typers.scala:2255)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5607)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+    scala.tools.nsc.transform.Erasure$Eraser.typed1(Erasure.scala:790)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInternal(Typers.scala:5738)
+    scala.tools.nsc.typechecker.Typers$Typer.body$2(Typers.scala:5679)
+
+[WARN] Object  accessed from multiple threads in ArrayDeque.scala:286:
+worker-erasure-36 stack trace:
+    scala.collection.mutable.ArrayDeque.removeHeadAssumingNonEmpty(ArrayDeque.scala:286)
+    scala.collection.mutable.ArrayDeque.removeHead(ArrayDeque.scala:282)
+    scala.collection.mutable.Stack.pop(Stack.scala:74)
+    scala.tools.nsc.typechecker.TypeDiagnostics$TyperDiagnostics$checkDead$.updateExpr(TypeDiagnostics.scala:734)
+    scala.tools.nsc.typechecker.Typers$Typer.doTypedApply(Typers.scala:3666)
+    scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4795)
+    scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4804)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5652)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.typechecker.Typers$Typer.runTyper$1(Typers.scala:5706)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:247:
+worker-erasure-36 stack trace:
+    scala.collection.mutable.HashTable.clearTable(HashTable.scala:247)
+    scala.collection.mutable.HashMap.clear(HashMap.scala:56)
+    scala.reflect.internal.tpe.GlbLubs.lub(GlbLubs.scala:254)
+    scala.reflect.internal.tpe.GlbLubs.lub$(GlbLubs.scala:233)
+    scala.reflect.internal.SymbolTable.lub(SymbolTable.scala:19)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIf$1(Typers.scala:4476)
+    scala.tools.nsc.typechecker.Typers$Typer.typedOutsidePatternMode$1(Typers.scala:5628)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5662)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+    scala.tools.nsc.transform.Erasure$Eraser.typed1(Erasure.scala:790)
+
+[WARN] Object scala.collection.mutable.HashTable.tableSize accessed from multiple threads in HashTable.scala:53:
+worker-erasure-36 stack trace:
+    scala.collection.mutable.HashTable.tableSize_$eq(HashTable.scala:53)
+    scala.collection.mutable.HashTable.clearTable(HashTable.scala:248)
+    scala.collection.mutable.HashMap.clear(HashMap.scala:56)
+    scala.reflect.internal.tpe.GlbLubs.lub(GlbLubs.scala:254)
+    scala.reflect.internal.tpe.GlbLubs.lub$(GlbLubs.scala:233)
+    scala.reflect.internal.SymbolTable.lub(SymbolTable.scala:19)
+    scala.tools.nsc.typechecker.Typers$Typer.typedIf$1(Typers.scala:4476)
+    scala.tools.nsc.typechecker.Typers$Typer.typedOutsidePatternMode$1(Typers.scala:5628)
+    scala.tools.nsc.typechecker.Typers$Typer.typedInAnyMode$1(Typers.scala:5662)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5669)
+
+[WARN] Object  accessed from multiple threads in HashTable.scala:151:
+worker-erasure-99 stack trace:
+    scala.collection.mutable.HashTable.addEntry0(HashTable.scala:151)
+    scala.collection.mutable.HashTable.findOrAddEntry(HashTable.scala:167)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:51)
+    scala.collection.mutable.HashMap.addOne(HashMap.scala:23)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.collection.mutable.MapOps.update(Map.scala:85)
+    scala.collection.mutable.MapOps.update$(Map.scala:85)
+    scala.collection.mutable.AbstractMap.update(Map.scala:206)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:269:
+worker-erasure-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:269)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:270:
+worker-erasure-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:270)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object  accessed from multiple threads in AnyRefMap.scala:271:
+worker-erasure-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:271)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object scala.collection.mutable.AnyRefMap._size accessed from multiple threads in AnyRefMap.scala:272:
+worker-erasure-155 stack trace:
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:272)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+    scala.tools.nsc.typechecker.Typers$Typer.typedMemberDef$1(Typers.scala:5606)
+    scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5668)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.mask accessed from multiple threads in AnyRefMap.scala:201:
+worker-erasure-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:201)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.scala$collection$mutable$AnyRefMap$$_hashes accessed from multiple threads in AnyRefMap.scala:202:
+worker-erasure-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:202)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.scala$collection$mutable$AnyRefMap$$_keys accessed from multiple threads in AnyRefMap.scala:203:
+worker-erasure-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:203)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap.scala$collection$mutable$AnyRefMap$$_values accessed from multiple threads in AnyRefMap.scala:204:
+worker-erasure-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:204)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.collection.mutable.AnyRefMap._vacant accessed from multiple threads in AnyRefMap.scala:205:
+worker-erasure-299 stack trace:
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:205)
+    scala.collection.mutable.AnyRefMap.repack(AnyRefMap.scala:233)
+    scala.collection.mutable.AnyRefMap.update(AnyRefMap.scala:274)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:286)
+    scala.collection.mutable.AnyRefMap.addOne(AnyRefMap.scala:30)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractMap.$plus$eq(Map.scala:206)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDefImpl(Typers.scala:2053)
+    scala.tools.nsc.typechecker.Typers$Typer.typedValDef(Typers.scala:2005)
+
+[WARN] Object scala.reflect.internal.Types$AbstractArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod accessed from multiple threads in Types.scala:2522:
+worker-erasure-353 stack trace:
+    scala.reflect.internal.Types$AbstractArgsTypeRef.scala$reflect$internal$Types$NonClassTypeRef$$relativeInfoCacheValidForPeriod_$eq(Types.scala:2522)
+    scala.reflect.internal.Types$NonClassTypeRef.$anonfun$relativeInfo$1(Types.scala:2047)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.Types$NonClassTypeRef$synchronizeRelativeInfoCacheAccess$.apply(Types.scala:2029)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo(Types.scala:2039)
+    scala.reflect.internal.Types$NonClassTypeRef.relativeInfo$(Types.scala:2039)
+    scala.reflect.internal.Types$AbstractArgsTypeRef.relativeInfo(Types.scala:2522)
+    scala.reflect.internal.Types$TypeRef.baseTypeOfNonClassTypeRef(Types.scala:2324)
+    scala.reflect.internal.Types$TypeRef.baseType(Types.scala:2315)
+    scala.reflect.internal.tpe.TypeComparers.firstTry$1(TypeComparers.scala:453)
+
+[WARN] Object scala.reflect.internal.SymbolTable.ph accessed from multiple threads in SymbolTable.scala:240:
+worker-jvm-1 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:240)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$rawInfo$1(Symbols.scala:1646)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.rawInfo(Symbols.scala:1608)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1550)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Mirrors$RootsBase.getModuleOrClass(Mirrors.scala:48)
+
+[WARN] Object scala.reflect.internal.SymbolTable.per accessed from multiple threads in SymbolTable.scala:241:
+worker-jvm-1 stack trace:
+    scala.reflect.internal.SymbolTable.phase_$eq(SymbolTable.scala:241)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$rawInfo$1(Symbols.scala:1646)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.rawInfo(Symbols.scala:1608)
+    scala.reflect.internal.Symbols$Symbol.$anonfun$info$1(Symbols.scala:1550)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$Symbol.info(Symbols.scala:1518)
+    scala.reflect.internal.Mirrors$RootsBase.getModuleOrClass(Mirrors.scala:48)
+
+[WARN] Object scala.reflect.internal.Symbols$TypeSymbol.tpePeriod accessed from multiple threads in Symbols.scala:3086:
+worker-jvm-1 stack trace:
+    scala.reflect.internal.Symbols$TypeSymbol.tpePeriod_$eq(Symbols.scala:3086)
+    scala.reflect.internal.Symbols$TypeSymbol.updateTypeCache(Symbols.scala:3164)
+    scala.reflect.internal.Symbols$TypeSymbol.maybeUpdateTypeCache(Symbols.scala:3155)
+    scala.reflect.internal.Symbols$TypeSymbol.$anonfun$tpe_$times$1(Symbols.scala:3130)
+    scala.reflect.internal.util.Parallel$.synchronizeAccess(Parallel.scala:35)
+    scala.reflect.internal.util.Parallel$Lock.apply(Parallel.scala:38)
+    scala.reflect.internal.Symbols$TypeSymbol.tpe_$times(Symbols.scala:3129)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq(BaseTypeSeqs.scala:191)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq$(BaseTypeSeqs.scala:186)
+    scala.reflect.internal.SymbolTable.compoundBaseTypeSeq(SymbolTable.scala:19)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod accessed from multiple threads in Types.scala:2221:
+worker-jvm-1 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqPeriod_$eq(Types.scala:2221)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2561)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1(BaseTypeSeqs.scala:199)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1$adapted(BaseTypeSeqs.scala:198)
+    scala.collection.immutable.List.foreach(List.scala:309)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq(BaseTypeSeqs.scala:198)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq$(BaseTypeSeqs.scala:186)
+
+[WARN] Object scala.reflect.internal.Types$TypeRef.baseTypeSeqCache accessed from multiple threads in Types.scala:2220:
+worker-jvm-1 stack trace:
+    scala.reflect.internal.Types$TypeRef.baseTypeSeqCache_$eq(Types.scala:2220)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef(Types.scala:2566)
+    scala.reflect.internal.Types.defineBaseTypeSeqOfTypeRef$(Types.scala:2558)
+    scala.reflect.internal.SymbolTable.defineBaseTypeSeqOfTypeRef(SymbolTable.scala:19)
+    scala.reflect.internal.Types$TypeRef.baseTypeSeq(Types.scala:2414)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1(BaseTypeSeqs.scala:199)
+    scala.reflect.internal.BaseTypeSeqs.$anonfun$compoundBaseTypeSeq$1$adapted(BaseTypeSeqs.scala:198)
+    scala.collection.immutable.List.foreach(List.scala:309)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq(BaseTypeSeqs.scala:198)
+    scala.reflect.internal.BaseTypeSeqs.compoundBaseTypeSeq$(BaseTypeSeqs.scala:186)
+
+[WARN] Object scala.collection.mutable.ListBuffer.last0 accessed from multiple threads in ListBuffer.scala:39:
+worker-jvm-2 stack trace:
+    scala.collection.mutable.ListBuffer.last0_$eq(ListBuffer.scala:39)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:98)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:31)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractBuffer.$plus$eq(Buffer.scala:174)
+    scala.tools.nsc.backend.jvm.GeneratedClassHandler$WritingClassHandler.process(GeneratedClassHandler.scala:101)
+    scala.tools.nsc.backend.jvm.CodeGen.genUnit(CodeGen.scala:55)
+    scala.tools.nsc.backend.jvm.GenBCode$BCodePhase.apply(GenBCode.scala:67)
+    scala.tools.nsc.Global$GlobalPhase.scala$tools$nsc$Global$GlobalPhase$$processUnit(Global.scala:478)
+
+[WARN] Object scala.collection.mutable.ListBuffer.len accessed from multiple threads in ListBuffer.scala:41:
+worker-jvm-2 stack trace:
+    scala.collection.mutable.ListBuffer.len_$eq(ListBuffer.scala:41)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:99)
+    scala.collection.mutable.ListBuffer.addOne(ListBuffer.scala:31)
+    scala.collection.mutable.Growable.$plus$eq(Growable.scala:27)
+    scala.collection.mutable.Growable.$plus$eq$(Growable.scala:27)
+    scala.collection.mutable.AbstractBuffer.$plus$eq(Buffer.scala:174)
+    scala.tools.nsc.backend.jvm.GeneratedClassHandler$WritingClassHandler.process(GeneratedClassHandler.scala:101)
+    scala.tools.nsc.backend.jvm.CodeGen.genUnit(CodeGen.scala:55)
+    scala.tools.nsc.backend.jvm.GenBCode$BCodePhase.apply(GenBCode.scala:67)
+    scala.tools.nsc.Global$GlobalPhase.scala$tools$nsc$Global$GlobalPhase$$processUnit(Global.scala:478)
+
+Compilation done in: 129.792782068 s

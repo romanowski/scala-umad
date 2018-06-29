@@ -6,7 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 import com.pkukielka.test.scala.SimpleClass;
 
-class MyTest {
+class BaseForMyTest {
+    transient protected int parentTransientInt = 1;
+}
+
+class MyTest extends BaseForMyTest {
     // Without accessing fields/methods method are marked as safe :)
     private int meaningOfLife = 42;
     private double d = 1.2;
@@ -18,6 +22,9 @@ class MyTest {
     private double[] darr = new double[3];
     private long[] larr = new long[3];
     private String[] sarr = new String[3];
+    transient private int transientInt = 1;
+    volatile private int volatileInt = 5;
+
 
     void changeDouble() {
         d = 3.4;
@@ -31,6 +38,15 @@ class MyTest {
         int x = 777;
         globalVar =  1;
         assert(x == 777);
+    }
+
+    void changeTransientInt() {
+        transientInt = transientInt * meaningOfLife;
+        volatileInt = volatileInt * globalVar;
+    }
+
+    void changeParentTransientInt() {
+        parentTransientInt = parentTransientInt * meaningOfLife;
     }
 
     void changeGlobalDoubleVar() { globalVarDouble =  globalVarDouble * 2.5; }
@@ -83,6 +99,13 @@ class MyTest {
     int otherMethod() {
         return meaningOfLife / 2;
     }
+
+    public synchronized int synchronizedMethod(){
+        meaningOfLife = universalRule / 3;
+        return meaningOfLife;
+    }
+
+    public static void resetState(){}
 }
 
 public class AgentTest {
@@ -219,6 +242,22 @@ public class AgentTest {
     }
 
     @Test
+    public void changeTransientInt() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(t::changeTransientInt);
+
+        assert (!hasFailed());
+    }
+
+    @Test
+    public void changeParentTransientInt() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(t::changeParentTransientInt);
+
+        assert (!hasFailed());
+    }
+
+    @Test
     public void synchronizedIndicatorWithTrait() throws InterruptedException {
         final SimpleClass t = new SimpleClass();
         startThreads(t::setSynchronizedVar);
@@ -248,5 +287,30 @@ public class AgentTest {
         startThreads(t::testSynchronizationWithDifferentLocks);
 
         assert (hasFailed());
+    }
+
+    @Test
+    public void testNestedSync() throws InterruptedException {
+        final SimpleClass t = new SimpleClass();
+        startThreads(t::nestedSynchronization);
+
+        assert (!hasFailed());
+    }
+
+    @Test
+    public void testDoubleSynchronization() throws InterruptedException {
+        final SimpleClass t = new SimpleClass();
+        startThreads(t::doubleSynchronization2);
+        startThreads(t::doubleSynchronization1);
+
+        assert (!hasFailed());
+    }
+
+    @Test
+    public void testSynchronizedMethod() throws InterruptedException {
+        final MyTest t = new MyTest();
+        startThreads(t::synchronizedMethod);
+
+        assert (!hasFailed());
     }
 }

@@ -39,4 +39,28 @@ class SimpleClass extends SynchronizedOps {
   def testVar(): Unit = {
     plainVar = "ala"
   }
+
+  private var nestedVar1 = 2
+  private var nestedVar2 = 7
+  private def innerNestedSynchronization() = Parallel.sync {
+    nestedVar1 = nestedVar2 * nestedVar1
+  }
+
+  def nestedSynchronization() = Parallel.sync {
+    innerNestedSynchronization()
+    nestedVar2 = nestedVar2 * nestedVar1
+  }
+
+
+  private var doubleSynchronizationState = 4
+
+  def doubleSynchronization1() = Parallel.lock2.synchronized {
+    Parallel.sync {
+      doubleSynchronizationState = nestedVar1 * nestedVar2
+    }
+  }
+
+  def doubleSynchronization2() = Parallel.lock2.synchronized {
+    doubleSynchronizationState = nestedVar1 / nestedVar2
+  }
 }
